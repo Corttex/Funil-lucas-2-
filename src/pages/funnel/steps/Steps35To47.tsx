@@ -5,6 +5,7 @@ import { CTAButton } from '../../../components/CTAButton';
 import { ScratchCard } from '../../../components/ScratchCard';
 import { SignatureCanvas } from '../../../components/SignatureCanvas';
 import { WeightCurveChart } from '../../../components/WeightCurveChart';
+import { AVATARS } from '../../../data/avatars';
 import {
   calcBmi,
   formatDatePtBr,
@@ -49,17 +50,19 @@ export function Steps35To47() {
   const ss = String(offerSeconds % 60).padStart(2, '0');
 
   if (step >= 35 && step <= 37) {
-    const prompts: Record<number, { q: string; emoji: string }> = {
-      35: { q: 'Você quer se sentir bem com o que veste?', emoji: '👗' },
-      36: { q: 'Você quer ter mais energia no seu dia a dia?', emoji: '⚡' },
-      37: { q: 'Você quer desenvolver novos hábitos saudáveis?', emoji: '🥗' },
+    const prompts: Record<number, { q: string; img: string }> = {
+      35: { q: 'Você quer se sentir bem com o que veste?', img: AVATARS.microCommitments[35] },
+      36: { q: 'Você quer ter mais energia no seu dia a dia?', img: AVATARS.microCommitments[36] },
+      37: { q: 'Você quer desenvolver novos hábitos saudáveis?', img: AVATARS.microCommitments[37] },
     };
     const item = prompts[step];
     return (
       <div className="mt-8 flex flex-col items-center gap-6 text-center">
-        <div className="flex h-28 w-28 items-center justify-center rounded-full bg-white text-6xl shadow-md">
-          {item.emoji}
-        </div>
+        <img
+          src={item.img}
+          alt={item.q}
+          className="h-32 w-32 rounded-full border-4 border-white object-cover shadow-md"
+        />
         <h1 className="bm-title">{item.q}</h1>
         <div className="mt-4 grid w-full grid-cols-2 gap-3">
           <button
@@ -277,14 +280,16 @@ export function Steps35To47() {
           <p className="text-sm font-bold text-[#0E3A47]">Nossas nutricionistas</p>
           <div className="mt-3 flex justify-center gap-5">
             {[
-              { name: 'Elina', emoji: '👩🏼‍⚕️' },
-              { name: 'Anna', emoji: '👩🏻‍⚕️' },
-              { name: 'Simona', emoji: '👩🏽‍⚕️' },
+              { name: 'Elina', img: AVATARS.nutritionists.Elina },
+              { name: 'Anna', img: AVATARS.nutritionists.Anna },
+              { name: 'Simona', img: AVATARS.nutritionists.Simona },
             ].map((n) => (
               <div key={n.name} className="flex flex-col items-center gap-1">
-                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#E6F7F4] text-2xl">
-                  {n.emoji}
-                </span>
+                <img
+                  src={n.img}
+                  alt={n.name}
+                  className="h-14 w-14 rounded-full border-2 border-[#10B981] object-cover shadow-sm"
+                />
                 <span className="text-xs font-semibold text-[#475569]">{n.name}</span>
               </div>
             ))}
@@ -325,7 +330,15 @@ export function Steps35To47() {
       <div className="grid grid-cols-2 gap-3 rounded-2xl bg-white p-4 shadow-sm">
         <div className="text-center">
           <p className="text-xs font-bold text-[#64748B]">Você hoje</p>
-          <div className="my-2 text-4xl">🧍🏻</div>
+          <img
+            src={
+              funnel.gender === 'homem'
+                ? AVATARS.paywall.todayHomem
+                : AVATARS.paywall.todayMulher
+            }
+            alt="Você hoje"
+            className="mx-auto my-2 h-28 w-28 rounded-2xl object-cover"
+          />
           <p className="text-xs font-bold">Peso: {currentKg} kg</p>
           <p className="text-xs text-[#64748B]">IMC: {currentBmi.toFixed(1)}</p>
           <div className="mt-2 flex justify-center gap-1">
@@ -336,7 +349,15 @@ export function Steps35To47() {
         </div>
         <div className="border-l border-slate-100 pl-3 text-center">
           <p className="text-xs font-bold text-[#10B981]">Você em {dateStr}</p>
-          <div className="my-2 text-4xl">💪🏻</div>
+          <img
+            src={
+              funnel.gender === 'homem'
+                ? AVATARS.paywall.goalHomem
+                : AVATARS.paywall.goalMulher
+            }
+            alt="Você na meta"
+            className="mx-auto my-2 h-28 w-28 rounded-2xl border-2 border-[#10B981] object-cover"
+          />
           <p className="text-xs font-bold text-[#10B981]">Meta: {targetKg} kg</p>
           <p className="text-xs text-[#64748B]">IMC: {targetBmi.toFixed(1)}</p>
           <div className="mt-2 flex justify-center gap-1">
@@ -436,10 +457,24 @@ export function Steps35To47() {
       </div>
 
       <div className="rounded-2xl bg-white p-4 text-sm shadow-sm">
-        <p className="font-bold text-[#10B981]">Ramón R. — Perdeu 20 kg em 4 meses</p>
-        <p className="mt-2 text-xs text-[#475569]">
-          <strong>Juana F.:</strong> “Emagreci 14 kg. Tudo graças ao plano personalizado!” ❤️ 44
-        </p>
+        <div className="flex items-center gap-3">
+          <img
+            src={AVATARS.paywall.ramon}
+            alt="Ramón R."
+            className="h-11 w-11 rounded-full object-cover"
+          />
+          <p className="font-bold text-[#10B981]">Ramón R. — Perdeu 20 kg em 4 meses</p>
+        </div>
+        <div className="mt-3 flex items-center gap-3 border-t border-slate-100 pt-3">
+          <img
+            src={AVATARS.paywall.juana}
+            alt="Juana F."
+            className="h-10 w-10 rounded-full object-cover"
+          />
+          <p className="text-xs text-[#475569]">
+            <strong>Juana F.:</strong> “Emagreci 14 kg. Tudo graças ao plano personalizado!” ❤️ 44
+          </p>
+        </div>
         <p className="mt-3 text-center text-base font-extrabold text-[#0E3A47]">💪 +500.000 💪</p>
       </div>
 

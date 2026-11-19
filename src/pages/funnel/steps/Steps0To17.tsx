@@ -3,32 +3,18 @@ import { Award, Check, Star, User } from 'lucide-react';
 import { CTAButton } from '../../../components/CTAButton';
 import { OptionCard } from '../../../components/OptionCard';
 import { SingleChoiceStep } from '../../../components/SingleChoiceStep';
+import { AVATARS } from '../../../data/avatars';
 import { genderTerms, type Gender } from '../../../engine/calculations';
 import { useBestMeStore } from '../../../store/useBestMeStore';
 
-function BodySilhouette({ type }: { type: string }) {
-  const paths: Record<string, string> = {
-    Oval: 'M20 8c6 0 10 8 10 18s-4 18-10 18-10-8-10-18 4-18 10-18z',
-    Ampulheta: 'M12 8h16l-5 16 5 18H12l5-18-5-16z',
-    Retângulo: 'M13 8h14v34H13V8z',
-    Triângulo: 'M16 8h8l6 34H10L16 8z',
-    'Triângulo invertido': 'M10 8h20l-6 34h-8L10 8z',
-    'Não tenho certeza': 'M20 12a6 6 0 100 12v4m0 6h.01',
-  };
-  const isQuestion = type === 'Não tenho certeza';
-  return (
-    <svg width="36" height="44" viewBox="0 0 40 50" className="shrink-0 text-[#10B981]">
-      <path
-        d={paths[type] ?? paths.Retângulo}
-        fill={isQuestion ? 'none' : '#CCFBF1'}
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
+const BODY_TYPE_AVATARS: Record<string, string> = {
+  Oval: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=160&q=80',
+  Ampulheta: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=160&q=80',
+  Retângulo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80',
+  Triângulo: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=160&q=80',
+  'Triângulo invertido': 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=160&q=80',
+  'Não tenho certeza': 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=160&q=80',
+};
 
 export function Steps0To17() {
   const { step, funnel, setFunnel, next, setApp } = useBestMeStore();
@@ -90,19 +76,21 @@ export function Steps0To17() {
 
           <div className="mt-4 grid w-full grid-cols-2 gap-4">
             {([
-              { id: 'mulher', label: 'Mulher', emoji: '👩🏻' },
-              { id: 'homem', label: 'Homem', emoji: '👨🏻' },
+              { id: 'mulher', label: 'Mulher', img: AVATARS.gender.mulher },
+              { id: 'homem', label: 'Homem', img: AVATARS.gender.homem },
             ] as const).map((item) => (
               <button
                 key={item.id}
                 onClick={() => selectAndAdvance({ gender: item.id })}
-                className={`bm-card flex flex-col items-center justify-center gap-3 py-6 ${
+                className={`bm-card flex flex-col items-center justify-center gap-3 overflow-hidden p-4 ${
                   funnel.gender === item.id ? 'selected' : ''
                 }`}
               >
-                <div className="flex h-24 w-24 items-center justify-center rounded-full bg-[#E6F7F4] text-5xl">
-                  {item.emoji}
-                </div>
+                <img
+                  src={item.img}
+                  alt={item.label}
+                  className="h-32 w-32 rounded-2xl object-cover shadow-sm"
+                />
                 <span className="text-base font-bold text-[#0E3A47]">{item.label}</span>
               </button>
             ))}
@@ -110,7 +98,8 @@ export function Steps0To17() {
         </div>
       );
 
-    case 1:
+    case 1: {
+      const ageMap = AVATARS.ageRanges[gender];
       return (
         <div className="mt-6 flex flex-col gap-4">
           <h1 className="bm-title">
@@ -118,26 +107,28 @@ export function Steps0To17() {
           </h1>
           <p className="bm-subtitle">Adapte seu plano de perda de peso à sua idade</p>
           <div className="mt-2 grid grid-cols-2 gap-3">
-            {[
-              { label: 'Entre 18 e 26', emoji: gender === 'mulher' ? '🧑🏻‍♀️' : '🧑🏻' },
-              { label: 'Entre 27 e 38', emoji: gender === 'mulher' ? '👩🏻' : '👨🏻' },
-              { label: 'Entre 39 e 50', emoji: gender === 'mulher' ? '👩🏽' : '👨🏽' },
-              { label: 'Mais de 50', emoji: gender === 'mulher' ? '👵🏻' : '👴🏻' },
-            ].map((item) => (
-              <button
-                key={item.label}
-                onClick={() => selectAndAdvance({ ageRange: item.label })}
-                className={`bm-card flex flex-col items-center gap-2 py-5 ${
-                  funnel.ageRange === item.label ? 'selected' : ''
-                }`}
-              >
-                <span className="text-4xl">{item.emoji}</span>
-                <span className="text-sm font-bold">{item.label}</span>
-              </button>
-            ))}
+            {(['Entre 18 e 26', 'Entre 27 e 38', 'Entre 39 e 50', 'Mais de 50'] as const).map(
+              (label) => (
+                <button
+                  key={label}
+                  onClick={() => selectAndAdvance({ ageRange: label })}
+                  className={`bm-card flex flex-col items-center gap-2.5 p-3 ${
+                    funnel.ageRange === label ? 'selected' : ''
+                  }`}
+                >
+                  <img
+                    src={ageMap[label]}
+                    alt={label}
+                    className="h-28 w-full rounded-xl object-cover"
+                  />
+                  <span className="text-sm font-bold text-[#0E3A47]">{label}</span>
+                </button>
+              ),
+            )}
           </div>
         </div>
       );
+    }
 
     case 2: {
       const options = [
@@ -145,7 +136,7 @@ export function Steps0To17() {
         'Melhorar minha saúde em geral',
         'Conseguir um corpo firme e tonificado',
         'Livrar-me do estresse',
-      ];
+      ] as const;
       const toggle = (item: string) => {
         const exists = funnel.objectives.includes(item);
         setFunnel({
@@ -165,7 +156,14 @@ export function Steps0To17() {
                 selected={funnel.objectives.includes(opt)}
                 onClick={() => toggle(opt)}
               >
-                {opt}
+                <div className="flex w-full items-center justify-between gap-3">
+                  <span>{opt}</span>
+                  <img
+                    src={AVATARS.objectives[opt]}
+                    alt={opt}
+                    className="h-12 w-12 shrink-0 rounded-xl object-cover"
+                  />
+                </div>
               </OptionCard>
             ))}
           </div>
@@ -187,7 +185,14 @@ export function Steps0To17() {
           </p>
           <div className="rounded-2xl border-2 border-[#FDBA74] bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between">
-              <strong className="text-[#0E3A47]">Reinis R.</strong>
+              <div className="flex items-center gap-3">
+                <img
+                  src={AVATARS.reinis}
+                  alt="Reinis R."
+                  className="h-11 w-11 rounded-full object-cover"
+                />
+                <strong className="text-[#0E3A47]">Reinis R.</strong>
+              </div>
               <div className="flex gap-0.5 text-amber-400">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star key={i} size={16} fill="currentColor" />
@@ -250,7 +255,11 @@ export function Steps0To17() {
                 }`}
               >
                 <span>{shape}</span>
-                <BodySilhouette type={shape} />
+                <img
+                  src={BODY_TYPE_AVATARS[shape]}
+                  alt={shape}
+                  className="h-12 w-12 rounded-xl object-cover"
+                />
               </button>
             ))}
           </div>
@@ -326,53 +335,71 @@ export function Steps0To17() {
 
     case 9:
       return (
-        <SingleChoiceStep
-          microCopy="☕ Rotina matinal"
-          title="A que horas você costuma tomar café da manhã?"
-          value={funnel.mealTimes.breakfast}
-          onSelect={(v) => setFunnel({ mealTimes: { ...funnel.mealTimes, breakfast: v } })}
-          onAdvance={next}
-          options={[
-            { value: 'pulo', label: 'Costumo pular o café da manhã' },
-            { value: '06_08', label: 'Entre 06:00 e 08:00 ou antes' },
-            { value: '08_10', label: 'Entre 08:00 e 10:00' },
-            { value: '10_12', label: 'Entre 10:00 e 12:00 ou mais tarde' },
-          ]}
-        />
+        <div className="mt-4 flex flex-col">
+          <img
+            src={AVATARS.meals.breakfast}
+            alt="Café da manhã"
+            className="h-36 w-full rounded-2xl object-cover shadow-sm"
+          />
+          <SingleChoiceStep
+            title="A que horas você costuma tomar café da manhã?"
+            value={funnel.mealTimes.breakfast}
+            onSelect={(v) => setFunnel({ mealTimes: { ...funnel.mealTimes, breakfast: v } })}
+            onAdvance={next}
+            options={[
+              { value: 'pulo', label: 'Costumo pular o café da manhã' },
+              { value: '06_08', label: 'Entre 06:00 e 08:00 ou antes' },
+              { value: '08_10', label: 'Entre 08:00 e 10:00' },
+              { value: '10_12', label: 'Entre 10:00 e 12:00 ou mais tarde' },
+            ]}
+          />
+        </div>
       );
 
     case 10:
       return (
-        <SingleChoiceStep
-          microCopy="🍽️ Meio do dia"
-          title="A que horas você costuma almoçar?"
-          value={funnel.mealTimes.lunch}
-          onSelect={(v) => setFunnel({ mealTimes: { ...funnel.mealTimes, lunch: v } })}
-          onAdvance={next}
-          options={[
-            { value: 'pulo', label: 'Costumo pular o almoço' },
-            { value: '10_12', label: 'Entre 10:00 e 12:00 ou antes' },
-            { value: '12_14', label: 'Entre 12:00 e 14:00' },
-            { value: '14_16', label: 'Entre 14:00 e 16:00 ou mais tarde' },
-          ]}
-        />
+        <div className="mt-4 flex flex-col">
+          <img
+            src={AVATARS.meals.lunch}
+            alt="Almoço"
+            className="h-36 w-full rounded-2xl object-cover shadow-sm"
+          />
+          <SingleChoiceStep
+            title="A que horas você costuma almoçar?"
+            value={funnel.mealTimes.lunch}
+            onSelect={(v) => setFunnel({ mealTimes: { ...funnel.mealTimes, lunch: v } })}
+            onAdvance={next}
+            options={[
+              { value: 'pulo', label: 'Costumo pular o almoço' },
+              { value: '10_12', label: 'Entre 10:00 e 12:00 ou antes' },
+              { value: '12_14', label: 'Entre 12:00 e 14:00' },
+              { value: '14_16', label: 'Entre 14:00 e 16:00 ou mais tarde' },
+            ]}
+          />
+        </div>
       );
 
     case 11:
       return (
-        <SingleChoiceStep
-          microCopy="🌙 Noite"
-          title="A que horas você costuma jantar?"
-          value={funnel.mealTimes.dinner}
-          onSelect={(v) => setFunnel({ mealTimes: { ...funnel.mealTimes, dinner: v } })}
-          onAdvance={next}
-          options={[
-            { value: 'pulo', label: 'Costumo pular o jantar' },
-            { value: '16_18', label: 'Entre 16:00 e 18:00 ou antes' },
-            { value: '18_20', label: 'Entre 18:00 e 20:00' },
-            { value: '20_22', label: 'Entre 20:00 e 22:00 ou mais tarde' },
-          ]}
-        />
+        <div className="mt-4 flex flex-col">
+          <img
+            src={AVATARS.meals.dinner}
+            alt="Jantar"
+            className="h-36 w-full rounded-2xl object-cover shadow-sm"
+          />
+          <SingleChoiceStep
+            title="A que horas você costuma jantar?"
+            value={funnel.mealTimes.dinner}
+            onSelect={(v) => setFunnel({ mealTimes: { ...funnel.mealTimes, dinner: v } })}
+            onAdvance={next}
+            options={[
+              { value: 'pulo', label: 'Costumo pular o jantar' },
+              { value: '16_18', label: 'Entre 16:00 e 18:00 ou antes' },
+              { value: '18_20', label: 'Entre 18:00 e 20:00' },
+              { value: '20_22', label: 'Entre 20:00 e 22:00 ou mais tarde' },
+            ]}
+          />
+        </div>
       );
 
     case 12:
@@ -460,9 +487,11 @@ export function Steps0To17() {
     case 17:
       return (
         <div className="mt-8 flex flex-col items-center gap-5 text-center">
-          <div className="flex h-28 w-28 items-center justify-center rounded-full bg-white text-6xl shadow-md">
-            ✌️
-          </div>
+          <img
+            src={AVATARS.positiveReinforcement}
+            alt="Sucesso"
+            className="h-32 w-32 rounded-full border-4 border-white object-cover shadow-md"
+          />
           <h1 className="bm-title">Você vai se sair muito bem!</h1>
           <p className="bm-subtitle leading-relaxed">
             Já ajudamos <strong className="text-[#0E3A47]">559.332</strong> {terms.pessoas} a

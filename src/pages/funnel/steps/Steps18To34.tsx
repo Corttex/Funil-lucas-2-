@@ -5,6 +5,7 @@ import { OptionCard } from '../../../components/OptionCard';
 import { SingleChoiceStep } from '../../../components/SingleChoiceStep';
 import { UnitToggle } from '../../../components/UnitToggle';
 import { WeightCurveChart } from '../../../components/WeightCurveChart';
+import { AVATARS } from '../../../data/avatars';
 import {
   BMI_LABEL,
   bmiCategory,
@@ -255,14 +256,22 @@ export function Steps18To34() {
         <div className="mt-6 flex flex-col gap-4">
           <h1 className="bm-title">Uma entre tantas histórias de sucesso</h1>
           <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-2xl bg-white p-4 text-center shadow-sm">
-              <div className="text-4xl">🧍🏻‍♀️</div>
+            <div className="overflow-hidden rounded-2xl bg-white p-2 text-center shadow-sm">
+              <img
+                src={AVATARS.janis.before}
+                alt="Antes"
+                className="h-40 w-full rounded-xl object-cover"
+              />
               <span className="mt-2 inline-block rounded-full bg-slate-100 px-3 py-0.5 text-xs font-bold">
                 Antes
               </span>
             </div>
-            <div className="rounded-2xl border-2 border-[#10B981] bg-white p-4 text-center shadow-sm">
-              <div className="text-4xl">💃🏻</div>
+            <div className="overflow-hidden rounded-2xl border-2 border-[#10B981] bg-white p-2 text-center shadow-sm">
+              <img
+                src={AVATARS.janis.after}
+                alt="Depois"
+                className="h-40 w-full rounded-xl object-cover"
+              />
               <span className="mt-2 inline-block rounded-full bg-[#ECFDF5] px-3 py-0.5 text-xs font-bold text-[#10B981]">
                 Depois
               </span>
@@ -481,9 +490,11 @@ export function Steps18To34() {
     case 31:
       return (
         <div className="mt-8 flex flex-col items-center gap-5 text-center">
-          <div className="flex h-28 w-28 items-center justify-center rounded-full bg-white text-5xl shadow-md">
-            💚
-          </div>
+          <img
+            src={AVATARS.empathy}
+            alt="Cuidado e saúde"
+            className="h-32 w-32 rounded-full border-4 border-white object-cover shadow-md"
+          />
           <h1 className="bm-title">
             Obrigado por responder às nossas perguntas com sinceridade, {nome}!
           </h1>

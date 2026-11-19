@@ -18,9 +18,11 @@ export function ProfileTab() {
         <div className="mt-4 flex justify-around border-t border-slate-100 pt-3">
           {NUTRITIONISTS.map((n) => (
             <div key={n.name} className="text-center">
-              <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-[#E6F7F4] text-2xl">
-                {n.emoji}
-              </div>
+              <img
+                src={n.avatar}
+                alt={n.name}
+                className="mx-auto h-12 w-12 rounded-full border-2 border-[#10B981] object-cover shadow-sm"
+              />
               <p className="mt-1 text-xs font-bold text-[#0E3A47]">{n.name}</p>
               <p className="text-[10px] text-[#64748B]">{n.role}</p>
             </div>

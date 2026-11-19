@@ -1,7 +1,9 @@
+import { AVATARS } from './avatars';
+
 export const NUTRITIONISTS = [
-  { name: 'Elina', role: 'Especialista em Metabolismo', emoji: '👩🏼‍⚕️' },
-  { name: 'Anna', role: 'Nutricionista Clínica', emoji: '👩🏻‍⚕️' },
-  { name: 'Simona', role: 'Coach de Hábitos', emoji: '👩🏽‍⚕️' },
+  { name: 'Elina', role: 'Especialista em Metabolismo', avatar: AVATARS.nutritionists.Elina },
+  { name: 'Anna', role: 'Nutricionista Clínica', avatar: AVATARS.nutritionists.Anna },
+  { name: 'Simona', role: 'Coach de Hábitos', avatar: AVATARS.nutritionists.Simona },
 ];
 
 export const NUTRITION_FAQ = [
