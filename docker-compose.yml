@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  # 1. Aplicação Web / PWA Best Me Fasting
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bestme_fasting_app
+    restart: always
+    ports:
+      - "3008:80"
+    depends_on:
+      - postgres
+    environment:
+      - NODE_ENV=production
+
+  # 2. Banco de Dados PostgreSQL para a VPS
+  postgres:
+    image: postgres:16-alpine
+    container_name: bestme_fasting_db
+    restart: always
+    environment:
+      POSTGRES_DB: bestme_fasting
+      POSTGRES_USER: bestme_user
+      POSTGRES_PASSWORD: bestme_secure_password_2026
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./src/database/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+
+volumes:
+  postgres_data:

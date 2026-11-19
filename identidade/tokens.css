@@ -1,0 +1,23 @@
+:root {
+  --color-bg-primary: #E6F7F4;
+  --color-bg-surface: #FFFFFF;
+  --color-bg-promo: #FFF7ED;
+  --color-border-promo: #FDBA74;
+  --color-text-primary: #0E3A47;
+  --color-text-secondary: #475569;
+  --color-text-muted: #64748B;
+  --color-accent: #10B981;
+  --color-accent-soft: #ECFDF5;
+  --color-cta-from: #38BDF8;
+  --color-cta-to: #0284C7;
+  --color-cta-disabled: #BAE6FD;
+  --color-border: #E2E8F0;
+  --color-progress-track: #CBD5E1;
+  --gradient-cta: linear-gradient(180deg, var(--color-cta-from) 0%, var(--color-cta-to) 100%);
+  --gradient-loading: linear-gradient(135deg, #14B8A6 0%, #0284C7 100%);
+  --shadow-cta: 0 8px 20px -4px rgba(2, 132, 199, 0.4);
+  --shadow-card: 0 4px 12px rgba(14, 58, 71, 0.04);
+  --radius-card: 16px;
+  --font-title: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+}

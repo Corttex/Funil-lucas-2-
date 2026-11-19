@@ -1,0 +1,12 @@
+.bm-container { max-width: 480px; margin: 0 auto; min-height: 100vh; padding: 0 16px 96px; }
+.bm-title { font-family: var(--font-title); font-weight: 800; font-size: 26px; line-height: 1.25; text-align: center; color: var(--color-text-primary); }
+.bm-title em { font-style: normal; color: var(--color-accent); }
+.bm-subtitle { text-align: center; color: var(--color-text-secondary); font-size: 16px; }
+.bm-card { background: var(--color-bg-surface); border: 1.5px solid var(--color-border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); min-height: 64px; padding: 16px 20px; font-weight: 600; color: var(--color-text-primary); transition: transform .1s; }
+.bm-card:active { transform: scale(0.98); }
+.bm-card.selected { border-color: var(--color-accent); background: var(--color-accent-soft); }
+.bm-cta { width: 100%; padding: 16px; border-radius: 9999px; border: 0; color: #fff; font-weight: 700; font-size: 17px; background: var(--gradient-cta); box-shadow: var(--shadow-cta); cursor: pointer; }
+.bm-cta:hover { filter: brightness(1.05); }
+.bm-cta:disabled { background: var(--color-cta-disabled); box-shadow: none; cursor: not-allowed; }
+.bm-progress { height: 6px; background: var(--color-progress-track); border-radius: 9999px; overflow: hidden; }
+.bm-progress > div { height: 100%; background: var(--color-accent); transition: width .3s; }

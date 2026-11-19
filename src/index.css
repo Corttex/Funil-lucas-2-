@@ -1,0 +1,7 @@
+@import '../identidade/tokens.css';
+@import '../identidade/components.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body { margin: 0; background: var(--color-bg-primary); font-family: var(--font-body); color: var(--color-text-primary); }
