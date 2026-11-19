@@ -16,10 +16,11 @@ FROM nginx:alpine
 # Configuração SPA Nginx com Gzip e Cache
 COPY <<EOF /etc/nginx/conf.d/default.conf
 server {
-    listen 80;
-    server_name localhost;
+    listen 80 default_server;
+    server_name _;
     root /usr/share/nginx/html;
     index index.html;
+    add_header X-Frame-Options "SAMEORIGIN";
 
     # Gzip Compression
     gzip on;

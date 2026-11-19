@@ -20,7 +20,7 @@ export function FunnelHeader({ step, total = 46, onBack, onOpenLogin }: Props) {
           ← Voltar
         </button>
         <strong style={{ fontFamily: 'var(--font-title)', fontSize: 18 }}>
-          Best{' '}
+          Jejum{' '}
           <span
             style={{
               background: 'var(--color-accent)',
@@ -29,9 +29,8 @@ export function FunnelHeader({ step, total = 46, onBack, onOpenLogin }: Props) {
               padding: '0 6px',
             }}
           >
-            Me
-          </span>{' '}
-          Fasting
+            Leve
+          </span>
         </strong>
         <div className="flex items-center gap-2">
           <span className="text-xs font-bold text-[#475569]">

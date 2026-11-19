@@ -46,7 +46,7 @@ export function Steps0To17() {
           <header className="flex h-16 w-full items-center justify-between">
             <span className="w-8" />
             <strong style={{ fontFamily: 'var(--font-title)', fontSize: 20 }}>
-              Best <span className="rounded-md bg-[#10B981] px-1.5 py-0.5 text-white">Me</span> Fasting
+              Jejum <span className="rounded-md bg-[#10B981] px-1.5 py-0.5 text-white">Leve</span>
             </strong>
             <button
               title="Login & Baixar App"

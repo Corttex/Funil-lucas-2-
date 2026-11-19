@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.bestmefasting.app',
-  appName: 'Best Me Fasting',
+  appName: 'Jejum Leve',
   webDir: 'dist',
   server: {
     androidScheme: 'https',

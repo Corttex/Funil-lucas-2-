@@ -10,9 +10,9 @@ interface Props {
 }
 
 const PLAN_PRICES = {
-  '1_month': { label: 'Plano BestMe Fasting (1 mês)', full: 99, sale: 39.9 },
-  '4_months': { label: 'Plano BestMe Fasting (4 meses)', full: 329, sale: 97.0 },
-  lifetime: { label: 'Plano BestMe Fasting Vitalício', full: 499, sale: 297.0 },
+  '1_month': { label: 'Plano Jejum Leve (1 mês)', full: 99, sale: 39.9 },
+  '4_months': { label: 'Plano Jejum Leve (4 meses)', full: 329, sale: 97.0 },
+  lifetime: { label: 'Plano Jejum Leve Vitalício', full: 499, sale: 297.0 },
 } as const;
 
 export function CheckoutModal({ open, onClose }: Props) {
@@ -176,15 +176,15 @@ export function CheckoutModal({ open, onClose }: Props) {
               <h3 className="text-xl font-extrabold text-[#0E3A47]">Você sabia? 🤔</h3>
               <p className="mt-2 text-sm text-[#475569]">
                 <strong>68%</strong> de quem começou perdeu pelo menos <strong>5 kg</strong> no
-                primeiro mês com o BestMe Fasting.
+                primeiro mês com o Jejum Leve.
               </p>
               <div className="mt-4 grid grid-cols-2 gap-3 text-xs font-bold">
                 <div className="rounded-xl bg-slate-100 p-3 text-[#475569]">
-                  Sem BestMe Fasting
+                  Sem Jejum Leve
                   <div className="mt-2 h-2 rounded bg-slate-300" />
                 </div>
                 <div className="rounded-xl bg-[#ECFDF5] p-3 text-[#10B981]">
-                  Com BestMe Fasting
+                  Com Jejum Leve
                   <div className="mt-2 h-2 rounded bg-[#10B981]" />
                 </div>
               </div>

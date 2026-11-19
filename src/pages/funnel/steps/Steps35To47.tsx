@@ -234,7 +234,7 @@ export function Steps35To47() {
           <h1 className="bm-title">
             Com seu plano, você receberá a <em>nutrição que seu corpo precisa</em>
           </h1>
-          <p className="bm-subtitle">Com o BestMe Fasting seus benefícios são:</p>
+          <p className="bm-subtitle">Com o Jejum Leve seus benefícios são:</p>
           <div className="rounded-2xl bg-white p-5 shadow-sm">
             <ul className="flex flex-col gap-3.5 text-sm font-semibold text-[#0E3A47]">
               {drops.map((d) => (

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bestme-v1';
+const CACHE_NAME = 'jejumleve-v1';
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

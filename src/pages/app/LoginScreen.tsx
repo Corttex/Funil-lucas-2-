@@ -57,7 +57,7 @@ export function LoginScreen() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     const cleanName = nameInput.trim() || funnel.name.trim() || 'Aluno(a)';
-    const cleanEmail = emailInput.trim() || funnel.email.trim() || 'cliente@bestme.app';
+    const cleanEmail = emailInput.trim() || funnel.email.trim() || 'cliente@jejumleve.app';
     setFunnel({ name: cleanName, email: cleanEmail });
     if (funnel.currentWeightKg) {
       addWeight(funnel.currentWeightKg, today());
@@ -84,7 +84,7 @@ export function LoginScreen() {
           <ArrowLeft size={15} /> Voltar ao Questionário
         </button>
         <strong style={{ fontFamily: 'var(--font-title)', fontSize: 18 }}>
-          Best <span className="rounded-md bg-[#10B981] px-1.5 py-0.5 text-white">Me</span> Fasting
+          Jejum <span className="rounded-md bg-[#10B981] px-1.5 py-0.5 text-white">Leve</span>
         </strong>
       </header>
 
@@ -220,7 +220,7 @@ export function LoginScreen() {
                 Role para baixo e toque em <strong>“Adicionar à Tela de Início”</strong>.
               </li>
               <li>
-                Confirme em <strong>Adicionar</strong> — o ícone <strong>Best Me</strong> aparecerá junto aos seus apps nativos!
+                Confirme em <strong>Adicionar</strong> — o ícone <strong>Jejum Leve</strong> aparecerá junto aos seus apps nativos!
               </li>
             </ol>
           </div>
@@ -239,7 +239,7 @@ export function LoginScreen() {
                 Toque em <strong>“Instalar aplicativo”</strong> ou <strong>“Adicionar à tela inicial”</strong>.
               </li>
               <li>
-                Confirme em <strong>Instalar</strong> para abrir o Best Me Fasting direto da sua gaveta de apps!
+                Confirme em <strong>Instalar</strong> para abrir o Jejum Leve direto da sua gaveta de apps!
               </li>
             </ol>
           </div>
