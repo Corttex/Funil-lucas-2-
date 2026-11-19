@@ -49,8 +49,10 @@ export interface AppData {
 
 interface State {
   step: number;
+  viewMode: 'funnel' | 'login' | 'app';
   funnel: FunnelData;
   app: AppData;
+  setViewMode: (mode: 'funnel' | 'login' | 'app') => void;
   setStep: (n: number) => void;
   next: () => void;
   back: () => void;
@@ -85,13 +87,19 @@ export const useBestMeStore = create<State>()(
   persist(
     (set) => ({
       step: 0,
+      viewMode: 'funnel',
       funnel: initialFunnel,
       app: initialApp,
+      setViewMode: (viewMode) => set({ viewMode }),
       setStep: (n) => set({ step: Math.max(0, Math.min(47, n)) }),
       next: () => set((s) => ({ step: Math.min(47, s.step + 1) })),
       back: () => set((s) => ({ step: Math.max(0, s.step - 1) })),
       setFunnel: (patch) => set((s) => ({ funnel: { ...s.funnel, ...patch } })),
-      setApp: (patch) => set((s) => ({ app: { ...s.app, ...patch } })),
+      setApp: (patch) =>
+        set((s) => ({
+          app: { ...s.app, ...patch },
+          viewMode: patch.isPaid === true ? 'app' : patch.isPaid === false ? 'funnel' : s.viewMode,
+        })),
       addWater: (ml, day = today()) =>
         set((s) => ({ app: { ...s.app, waterLog: { ...s.app.waterLog, [day]: (s.app.waterLog[day] ?? 0) + ml } } })),
       addWeight: (kg, day = today()) =>
@@ -100,7 +108,7 @@ export const useBestMeStore = create<State>()(
         })),
       startFast: () => set((s) => ({ app: { ...s.app, fastStart: Date.now() } })),
       endFast: () => set((s) => ({ app: { ...s.app, fastStart: null } })),
-      reset: () => set({ step: 0, funnel: initialFunnel, app: initialApp }),
+      reset: () => set({ step: 0, viewMode: 'funnel', funnel: initialFunnel, app: initialApp }),
     }),
     { name: 'bestme-fasting-v1' },
   ),

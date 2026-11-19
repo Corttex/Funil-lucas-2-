@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Smartphone } from 'lucide-react';
+import { LoginScreen } from './pages/app/LoginScreen';
 import { MemberApp } from './pages/app/MemberApp';
 import { FunnelFlow } from './pages/funnel/FunnelFlow';
 import { useBestMeStore } from './store/useBestMeStore';
@@ -59,11 +60,18 @@ export function MobileOnlyBlocker({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const isPaid = useBestMeStore((s) => s.app.isPaid);
+  const { viewMode, app } = useBestMeStore();
+  const activeMode = viewMode || (app.isPaid ? 'app' : 'funnel');
 
   return (
     <MobileOnlyBlocker>
-      {isPaid ? <MemberApp /> : <FunnelFlow />}
+      {activeMode === 'login' ? (
+        <LoginScreen />
+      ) : activeMode === 'app' ? (
+        <MemberApp />
+      ) : (
+        <FunnelFlow />
+      )}
     </MobileOnlyBlocker>
   );
 }

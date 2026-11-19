@@ -1,6 +1,16 @@
 import { useEffect, useState } from 'react';
-import { Droplets, Flame, Play, Square } from 'lucide-react';
-import { waterGoalMl, type Protocol } from '../../engine/calculations';
+import { ArrowLeft, Droplets, Flame, Play, Sparkles, Square } from 'lucide-react';
+import { AVATARS } from '../../data/avatars';
+import {
+  BMI_LABEL,
+  bmiCategory,
+  calcBmi,
+  formatDatePtBr,
+  targetDate,
+  waterGoalMl,
+  weeksToGoal,
+  type Protocol,
+} from '../../engine/calculations';
 import { today, useBestMeStore } from '../../store/useBestMeStore';
 
 const PROTOCOL_HOURS: Record<Protocol, number> = {
@@ -31,7 +41,7 @@ function fmtHour(ts: number) {
 }
 
 export function TodayTab() {
-  const { funnel, app, setApp, startFast, endFast, addWater } = useBestMeStore();
+  const { funnel, app, setApp, setViewMode, startFast, endFast, addWater } = useBestMeStore();
   const [now, setNow] = useState(Date.now());
 
   useEffect(() => {
@@ -39,9 +49,14 @@ export function TodayTab() {
     return () => window.clearInterval(id);
   }, []);
 
-  const nome = funnel.name.trim() || 'amigo(a)';
+  const nome = funnel.name.trim() || 'Aluno(a)';
+  const heightCm = funnel.heightCm ?? 168;
   const currentKg = funnel.currentWeightKg ?? 75;
   const targetKg = funnel.targetWeightKg ?? 65;
+  const bmi = calcBmi(currentKg, heightCm);
+  const projectedDate = formatDatePtBr(
+    targetDate(weeksToGoal(currentKg, targetKg, funnel.weeklyPace)),
+  );
   const goalHours = PROTOCOL_HOURS[app.protocol];
   const goalMs = goalHours * 3600 * 1000;
   const elapsedMs = app.fastStart ? Math.max(0, now - app.fastStart) : 0;
@@ -58,15 +73,50 @@ export function TodayTab() {
 
   return (
     <div className="flex flex-col gap-5 pb-24">
-      <div className="flex items-center justify-between pt-2">
-        <div>
-          <h1 className="text-xl font-extrabold text-[#0E3A47]">Olá, {nome}! 👋</h1>
-          <p className="text-xs font-semibold text-[#475569]">Meta: {targetKg} kg</p>
-        </div>
+      <div className="flex items-center justify-between pt-3">
+        <button
+          onClick={() => setViewMode('funnel')}
+          className="flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-xs font-bold text-[#0E3A47] shadow-sm"
+        >
+          <ArrowLeft size={14} /> Questionário
+        </button>
         <span className="flex items-center gap-1 rounded-full bg-[#FFF7ED] px-3 py-1 text-xs font-extrabold text-orange-600">
           <Flame size={14} /> Dia 1
         </span>
       </div>
+
+      <div className="flex items-center gap-3.5 rounded-3xl bg-white p-4 shadow-sm">
+        <img
+          src={funnel.gender === 'homem' ? AVATARS.gender.homem : AVATARS.gender.mulher}
+          alt={nome}
+          className="h-14 w-14 rounded-2xl object-cover"
+        />
+        <div className="flex-1">
+          <h1 className="text-lg font-extrabold text-[#0E3A47]">Olá, {nome}! 👋</h1>
+          <p className="text-xs font-semibold text-[#475569]">
+            Meta: <strong className="text-[#10B981]">{targetKg} kg</strong> até {projectedDate}
+          </p>
+          <div className="mt-1 flex flex-wrap gap-1.5 text-[10px] font-bold">
+            <span className="rounded-md bg-[#E6F7F4] px-2 py-0.5 text-[#0E3A47]">
+              IMC {bmi.toFixed(1)} ({BMI_LABEL[bmiCategory(bmi)]})
+            </span>
+            {funnel.bodyType && (
+              <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[#475569]">
+                Biotipo: {funnel.bodyType}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {funnel.objectives.length > 0 && (
+        <div className="flex items-center gap-2 rounded-2xl border border-[#10B981]/30 bg-[#ECFDF5] px-3.5 py-2.5 text-xs text-[#0E3A47]">
+          <Sparkles size={15} className="shrink-0 text-[#10B981]" />
+          <span>
+            Foco do seu plano: <strong>{funnel.objectives.join(', ')}</strong>
+          </span>
+        </div>
+      )}
 
       <div className="rounded-3xl bg-white p-5 shadow-sm">
         <div className="flex justify-center gap-2">

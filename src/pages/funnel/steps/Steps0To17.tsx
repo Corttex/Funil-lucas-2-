@@ -17,7 +17,7 @@ const BODY_TYPE_AVATARS: Record<string, string> = {
 };
 
 export function Steps0To17() {
-  const { step, funnel, setFunnel, next, setApp } = useBestMeStore();
+  const { step, funnel, setFunnel, next, setViewMode } = useBestMeStore();
   const gender: Gender = funnel.gender ?? 'mulher';
   const terms = genderTerms(gender);
   const nome = funnel.name.trim() || 'amigo(a)';
@@ -45,8 +45,8 @@ export function Steps0To17() {
               Best <span className="rounded-md bg-[#10B981] px-1.5 py-0.5 text-white">Me</span> Fasting
             </strong>
             <button
-              title="Entrar no App (Demo)"
-              onClick={() => setApp({ isPaid: true })}
+              title="Login & Baixar App"
+              onClick={() => setViewMode('login')}
               className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#0E3A47] shadow-sm"
             >
               <User size={18} />

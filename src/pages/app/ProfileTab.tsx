@@ -1,16 +1,24 @@
 import { useState } from 'react';
-import { RotateCcw } from 'lucide-react';
+import { ArrowLeft, Download, RotateCcw } from 'lucide-react';
 import { hungerTip, NUTRITION_FAQ, NUTRITIONISTS } from '../../data/nutritionists';
 import type { Protocol } from '../../engine/calculations';
 import { useBestMeStore } from '../../store/useBestMeStore';
 
 export function ProfileTab() {
-  const { funnel, app, setApp, reset } = useBestMeStore();
+  const { funnel, app, setApp, setViewMode, reset } = useBestMeStore();
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   return (
     <div className="flex flex-col gap-5 pb-24 pt-2">
-      <h1 className="text-xl font-extrabold text-[#0E3A47]">Nutricionistas & Perfil</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-extrabold text-[#0E3A47]">Nutricionistas & Perfil</h1>
+        <button
+          onClick={() => setViewMode('funnel')}
+          className="flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-xs font-bold text-[#0E3A47] shadow-sm"
+        >
+          <ArrowLeft size={14} /> Questionário
+        </button>
+      </div>
 
       <div className="rounded-3xl bg-white p-4 shadow-sm">
         <p className="text-xs font-bold uppercase text-[#10B981]">Dica diária personalizada</p>
@@ -74,12 +82,21 @@ export function ProfileTab() {
         </div>
       </div>
 
-      <button
-        onClick={reset}
-        className="flex items-center justify-center gap-2 rounded-full border border-red-200 bg-white py-3 text-xs font-bold text-red-600"
-      >
-        <RotateCcw size={15} /> Reiniciar Funil (Demo)
-      </button>
+      <div className="flex flex-col gap-2.5">
+        <button
+          onClick={() => setViewMode('login')}
+          className="flex items-center justify-center gap-2 rounded-full border border-[#10B981] bg-white py-3 text-xs font-bold text-[#10B981]"
+        >
+          <Download size={15} /> Conta & Baixar Aplicativo (iOS / Android)
+        </button>
+
+        <button
+          onClick={reset}
+          className="flex items-center justify-center gap-2 rounded-full border border-red-200 bg-white py-3 text-xs font-bold text-red-600"
+        >
+          <RotateCcw size={15} /> Reiniciar Tudo do Zero
+        </button>
+      </div>
     </div>
   );
 }
