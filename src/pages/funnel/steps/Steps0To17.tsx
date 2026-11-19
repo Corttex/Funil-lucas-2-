@@ -1,20 +1,24 @@
 import { useEffect, useRef } from 'react';
-import { Award, Check, Star, User } from 'lucide-react';
+import { Check, Star, User } from 'lucide-react';
+import { BodyTypeIllustration } from '../../../components/BodyTypeIllustration';
 import { CTAButton } from '../../../components/CTAButton';
-import { OptionCard } from '../../../components/OptionCard';
 import { SingleChoiceStep } from '../../../components/SingleChoiceStep';
 import { AVATARS } from '../../../data/avatars';
 import { genderTerms, type Gender } from '../../../engine/calculations';
 import { useBestMeStore } from '../../../store/useBestMeStore';
 
-const BODY_TYPE_AVATARS: Record<string, string> = {
-  Oval: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=160&q=80',
-  Ampulheta: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=160&q=80',
-  Retângulo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80',
-  Triângulo: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=160&q=80',
-  'Triângulo invertido': 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=160&q=80',
-  'Não tenho certeza': 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=160&q=80',
-};
+function LaurelBranch({ flip }: { flip?: boolean }) {
+  return (
+    <svg
+      viewBox="0 0 24 38"
+      className={`h-8 w-5 shrink-0 text-[#0E3A47] ${flip ? '-scale-x-100' : ''}`}
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M16 34c-6-5-9-13-8-23M13 31c-4-1-6-3-7-6 3 0 5 2 7 6zm-2-7c-4-1-6-3-7-6 3 0 5 2 7 6zm-1-7c-4-1-6-3-6-6 3 0 5 2 6 6zm0-7c-3-1-5-3-5-6 3 0 4 2 5 6zm2-6c-2-2-2-4-1-6 2 1 3 3 1 6zm3 24c0-4 2-6 5-7-1 3-2 5-5 7zm-1-7c0-4 2-6 5-7-1 3-2 5-5 7zm0-7c0-4 2-6 5-7-1 3-2 5-5 7zm0-7c0-3 2-5 4-6-1 3-2 4-4 6z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
 export function Steps0To17() {
   const { step, funnel, setFunnel, next, setViewMode } = useBestMeStore();
@@ -57,19 +61,19 @@ export function Steps0To17() {
             <em>Perca peso</em> introduzindo pequenas mudanças
           </h1>
 
-          <div className="mt-5 flex items-center gap-2 rounded-full border border-[#FDBA74] bg-white px-5 py-2 shadow-sm">
-            <Award size={18} className="text-[#10B981]" />
+          <div className="mt-5 flex items-center gap-2 rounded-full border border-[#10B981]/40 bg-white px-5 py-2 shadow-sm">
+            <LaurelBranch />
             <div className="text-center leading-tight">
               <div className="flex items-center justify-center gap-0.5 text-amber-400">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star key={i} size={13} fill="currentColor" />
                 ))}
               </div>
-              <p className="text-xs font-bold text-[#0E3A47]">
-                500 mil <span className="font-normal text-[#475569]">usuários satisfeitos</span>
+              <p className="mt-0.5 text-xs font-bold text-[#0E3A47]">
+                500 mil <span className="block font-normal italic text-[#475569]">usuários satisfeitos</span>
               </p>
             </div>
-            <Award size={18} className="text-[#10B981]" />
+            <LaurelBranch flip />
           </div>
 
           <p className="bm-subtitle mt-6 font-semibold text-[#0E3A47]">Selecione seu sexo</p>
@@ -82,15 +86,17 @@ export function Steps0To17() {
               <button
                 key={item.id}
                 onClick={() => selectAndAdvance({ gender: item.id })}
-                className={`bm-card flex flex-col items-center justify-center gap-3 overflow-hidden p-4 ${
+                className={`bm-card flex flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl p-2.5 pb-3.5 shadow-sm ${
                   funnel.gender === item.id ? 'selected' : ''
                 }`}
               >
-                <img
-                  src={item.img}
-                  alt={item.label}
-                  className="h-32 w-32 rounded-2xl object-cover shadow-sm"
-                />
+                <div className="aspect-[3/4] w-full overflow-hidden rounded-xl bg-[#EAF6FF]">
+                  <img
+                    src={item.img}
+                    alt={item.label}
+                    className="h-full w-full object-cover object-top"
+                  />
+                </div>
                 <span className="text-base font-bold text-[#0E3A47]">{item.label}</span>
               </button>
             ))}
@@ -112,15 +118,17 @@ export function Steps0To17() {
                 <button
                   key={label}
                   onClick={() => selectAndAdvance({ ageRange: label })}
-                  className={`bm-card flex flex-col items-center gap-2.5 p-3 ${
+                  className={`bm-card flex flex-col items-center gap-2.5 rounded-2xl p-2.5 pb-3.5 shadow-sm ${
                     funnel.ageRange === label ? 'selected' : ''
                   }`}
                 >
-                  <img
-                    src={ageMap[label]}
-                    alt={label}
-                    className="h-28 w-full rounded-xl object-cover"
-                  />
+                  <div className="aspect-[3/4] w-full overflow-hidden rounded-xl bg-[#EAF6FF]">
+                    <img
+                      src={ageMap[label]}
+                      alt={label}
+                      className="h-full w-full object-cover object-top"
+                    />
+                  </div>
                   <span className="text-sm font-bold text-[#0E3A47]">{label}</span>
                 </button>
               ),
@@ -149,23 +157,43 @@ export function Steps0To17() {
         <div className="mt-6 flex flex-col gap-4">
           <h1 className="bm-title">O que você se propôs a conseguir?</h1>
           <div className="flex flex-col gap-3">
-            {options.map((opt) => (
-              <OptionCard
-                key={opt}
-                multi
-                selected={funnel.objectives.includes(opt)}
-                onClick={() => toggle(opt)}
-              >
-                <div className="flex w-full items-center justify-between gap-3">
-                  <span>{opt}</span>
-                  <img
-                    src={AVATARS.objectives[opt]}
-                    alt={opt}
-                    className="h-12 w-12 shrink-0 rounded-xl object-cover"
-                  />
-                </div>
-              </OptionCard>
-            ))}
+            {options.map((opt) => {
+              const isSelected = funnel.objectives.includes(opt);
+              return (
+                <button
+                  key={opt}
+                  type="button"
+                  onClick={() => toggle(opt)}
+                  className={`relative flex min-h-[84px] w-full items-center justify-between overflow-hidden rounded-2xl border-[1.5px] pl-4 pr-0 text-left shadow-sm transition-transform active:scale-[0.98] ${
+                    isSelected
+                      ? 'border-[#10B981] bg-[#ECFDF5]'
+                      : 'border-[#D9EFEA] bg-white'
+                  }`}
+                >
+                  <div className="flex items-center gap-3 pr-2">
+                    <span
+                      className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border-2 text-xs font-bold ${
+                        isSelected
+                          ? 'border-[#10B981] bg-[#10B981] text-white'
+                          : 'border-[#BCECE3] bg-[#E2F6F2] text-transparent'
+                      }`}
+                    >
+                      ✓
+                    </span>
+                    <span className="text-[15px] font-semibold leading-snug text-[#0E3A47]">
+                      {opt}
+                    </span>
+                  </div>
+                  <div className="relative flex h-[84px] w-[108px] shrink-0 items-end justify-center overflow-hidden rounded-l-[48px] bg-[#BCECE3]">
+                    <img
+                      src={AVATARS.objectives[gender][opt]}
+                      alt={opt}
+                      className="h-[84px] w-full object-cover object-top"
+                    />
+                  </div>
+                </button>
+              );
+            })}
           </div>
           <div className="sticky bottom-4 mt-4">
             <CTAButton disabled={funnel.objectives.length === 0} onClick={next}>
@@ -250,16 +278,12 @@ export function Steps0To17() {
               <button
                 key={shape}
                 onClick={() => selectAndAdvance({ bodyType: shape })}
-                className={`bm-card flex w-full items-center justify-between ${
+                className={`bm-card flex min-h-[96px] w-full items-center justify-between px-5 py-2 ${
                   funnel.bodyType === shape ? 'selected' : ''
                 }`}
               >
                 <span>{shape}</span>
-                <img
-                  src={BODY_TYPE_AVATARS[shape]}
-                  alt={shape}
-                  className="h-12 w-12 rounded-xl object-cover"
-                />
+                <BodyTypeIllustration type={shape} gender={gender} />
               </button>
             ))}
           </div>

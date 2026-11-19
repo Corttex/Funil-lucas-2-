@@ -3,34 +3,42 @@
 // ============================================================================
 
 export const AVATARS = {
-  // Etapa 0: Seletor de Sexo (Segurando copo de água / estilo saudável)
+  // Etapa 0: Seletor de Sexo (Segurando copo de água com limão e menta)
   gender: {
-    mulher: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80',
-    homem: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
+    mulher: '/assets/gender-woman.png',
+    homem: '/assets/gender-man.png',
   },
 
   // Etapa 1: Faixas Etárias (Mulher e Homem)
   ageRanges: {
     mulher: {
-      'Entre 18 e 26': 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=360&q=80',
-      'Entre 27 e 38': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=360&q=80',
-      'Entre 39 e 50': 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=360&q=80',
-      'Mais de 50': 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=360&q=80',
+      'Entre 18 e 26': '/assets/age-woman-18-26.png',
+      'Entre 27 e 38': '/assets/age-woman-27-38.png',
+      'Entre 39 e 50': '/assets/age-woman-39-50.png',
+      'Mais de 50': '/assets/age-woman-50-plus.png',
     },
     homem: {
-      'Entre 18 e 26': 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=360&q=80',
-      'Entre 27 e 38': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=360&q=80',
-      'Entre 39 e 50': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=360&q=80',
-      'Mais de 50': 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=360&q=80',
+      'Entre 18 e 26': '/assets/age-man-18-26.png',
+      'Entre 27 e 38': '/assets/age-man-27-38.png',
+      'Entre 39 e 50': '/assets/age-man-39-50.png',
+      'Mais de 50': '/assets/age-man-50-plus.png',
     },
   },
 
-  // Etapa 2: Objetivos com fotos recortadas
+  // Etapa 2: Objetivos com fotos em estúdio (Masculino e Feminino)
   objectives: {
-    'Perder peso': 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=240&q=80',
-    'Melhorar minha saúde em geral': 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=240&q=80',
-    'Conseguir um corpo firme e tonificado': 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=240&q=80',
-    'Livrar-me do estresse': 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=240&q=80',
+    mulher: {
+      'Perder peso': '/assets/obj-woman-weight.png',
+      'Melhorar minha saúde em geral': '/assets/obj-woman-health.png',
+      'Conseguir um corpo firme e tonificado': '/assets/obj-woman-toned.png',
+      'Livrar-me do estresse': '/assets/obj-woman-stress.png',
+    },
+    homem: {
+      'Perder peso': '/assets/obj-man-weight.png',
+      'Melhorar minha saúde em geral': '/assets/obj-man-health.png',
+      'Conseguir um corpo firme e tonificado': '/assets/obj-man-toned.png',
+      'Livrar-me do estresse': '/assets/obj-man-stress.png',
+    },
   },
 
   // Etapa 3: Depoimento Reinis R.
