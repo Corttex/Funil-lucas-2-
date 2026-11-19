@@ -31,7 +31,7 @@ export function LoginScreen() {
   const [emailInput, setEmailInput] = useState(funnel.email || '');
   const [passwordInput, setPasswordInput] = useState('');
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
-  const [showIosGuide, setShowIosGuide] = useState(false);
+  const [installPlatform, setInstallPlatform] = useState<'ios' | 'android' | null>(null);
 
   useEffect(() => {
     const handler = (e: Event) => {
@@ -66,11 +66,11 @@ export function LoginScreen() {
     setViewMode('app');
   };
 
-  const handleInstallPwa = async () => {
-    if (installPrompt) {
+  const handleInstallPwa = async (platform: 'ios' | 'android') => {
+    if (platform === 'android' && installPrompt) {
       await installPrompt.prompt();
     } else {
-      setShowIosGuide(true);
+      setInstallPlatform((prev) => (prev === platform ? null : platform));
     }
   };
 
@@ -184,7 +184,7 @@ export function LoginScreen() {
         <div className="mt-4 grid grid-cols-2 gap-2.5">
           <button
             type="button"
-            onClick={handleInstallPwa}
+            onClick={() => handleInstallPwa('ios')}
             className="flex items-center justify-center gap-2 rounded-2xl bg-[#0E3A47] px-3 py-3 text-xs font-bold text-white shadow-sm"
           >
             <Smartphone size={16} className="text-[#10B981]" />
@@ -196,7 +196,7 @@ export function LoginScreen() {
 
           <button
             type="button"
-            onClick={handleInstallPwa}
+            onClick={() => handleInstallPwa('android')}
             className="flex items-center justify-center gap-2 rounded-2xl bg-[#10B981] px-3 py-3 text-xs font-bold text-white shadow-sm"
           >
             <Download size={16} />
@@ -207,19 +207,39 @@ export function LoginScreen() {
           </button>
         </div>
 
-        {showIosGuide && (
+        {installPlatform === 'ios' && (
           <div className="mt-3 rounded-2xl border border-[#10B981]/40 bg-[#ECFDF5] p-3.5 text-xs text-[#0E3A47]">
             <p className="flex items-center gap-1.5 font-extrabold text-[#10B981]">
-              <CheckCircle2 size={15} /> Como instalar na tela inicial:
+              <CheckCircle2 size={15} /> Instalar no iPhone / iPad (iOS):
             </p>
             <ol className="mt-1.5 list-decimal space-y-1 pl-4 text-[11px] text-[#475569]">
               <li>
-                No navegador do celular, toque em <strong>Compartilhar</strong> (iOS) ou no menu{' '}
-                <strong>⋮</strong> (Android).
+                No Safari do iPhone, toque no botão <strong>Compartilhar</strong> (ícone de quadrado com seta para cima na barra inferior).
               </li>
               <li>
-                Selecione <strong>“Adicionar à Tela de Início”</strong> ou{' '}
-                <strong>“Instalar Aplicativo”</strong>.
+                Role para baixo e toque em <strong>“Adicionar à Tela de Início”</strong>.
+              </li>
+              <li>
+                Confirme em <strong>Adicionar</strong> — o ícone <strong>Best Me</strong> aparecerá junto aos seus apps nativos!
+              </li>
+            </ol>
+          </div>
+        )}
+
+        {installPlatform === 'android' && (
+          <div className="mt-3 rounded-2xl border border-[#10B981]/40 bg-[#ECFDF5] p-3.5 text-xs text-[#0E3A47]">
+            <p className="flex items-center gap-1.5 font-extrabold text-[#10B981]">
+              <CheckCircle2 size={15} /> Instalar no Android (App Nativo / PWA):
+            </p>
+            <ol className="mt-1.5 list-decimal space-y-1 pl-4 text-[11px] text-[#475569]">
+              <li>
+                No Chrome do Android, toque nos <strong>3 pontinhos (⋮)</strong> no canto superior direito.
+              </li>
+              <li>
+                Toque em <strong>“Instalar aplicativo”</strong> ou <strong>“Adicionar à tela inicial”</strong>.
+              </li>
+              <li>
+                Confirme em <strong>Instalar</strong> para abrir o Best Me Fasting direto da sua gaveta de apps!
               </li>
             </ol>
           </div>

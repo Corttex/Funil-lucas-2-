@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Best Me Fasting</string>
+    <string name="title_activity_main">Best Me Fasting</string>
+    <string name="package_name">com.bestmefasting.app</string>
+    <string name="custom_url_scheme">com.bestmefasting.app</string>
+</resources>
