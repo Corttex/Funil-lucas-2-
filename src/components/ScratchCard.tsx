@@ -1,31 +1,58 @@
 import { useEffect, useRef, useState } from 'react';
 import confetti from 'canvas-confetti';
+import { Check } from 'lucide-react';
+import { useI18n } from '../i18n/I18nProvider';
 
 interface Props {
+  promoCode: string;
   onComplete: () => void;
 }
 
-export function ScratchCard({ onComplete }: Props) {
+export function ScratchCard({ promoCode, onComplete }: Props) {
+  const { t } = useI18n();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const scratching = useRef(false);
   const [revealed, setRevealed] = useState(false);
-  const [countdown, setCountdown] = useState(5);
+  const [countdown, setCountdown] = useState(3);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+
     const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-    grad.addColorStop(0, '#14B8A6');
-    grad.addColorStop(1, '#0EA5E9');
+    grad.addColorStop(0, '#3B2820');
+    grad.addColorStop(1, '#2E1F19');
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = 'rgba(255,255,255,0.9)';
-    ctx.font = 'bold 16px Inter, sans-serif';
+
+    // Subtle shimmer strokes mimicking scratch foil
+    ctx.strokeStyle = 'rgba(255,255,255,0.14)';
+    ctx.lineWidth = 10;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(64, 108);
+    ctx.lineTo(148, 88);
+    ctx.lineTo(84, 136);
+    ctx.lineTo(164, 118);
+    ctx.stroke();
+
+    // Dashed perforation line
+    ctx.setLineDash([6, 5]);
+    ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(16, 188);
+    ctx.lineTo(canvas.width - 16, 188);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 14px Inter, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('Raspe aqui 👆', canvas.width / 2, canvas.height / 2);
-  }, []);
+    ctx.fillText(t.funnel.step53.scratchHere, canvas.width / 2, 42);
+  }, [t.funnel.step53.scratchHere]);
 
   useEffect(() => {
     if (!revealed) return;
@@ -45,7 +72,7 @@ export function ScratchCard({ onComplete }: Props) {
   const revealNow = () => {
     if (revealed) return;
     setRevealed(true);
-    confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
+    confetti({ particleCount: 75, spread: 65, origin: { y: 0.55 } });
   };
 
   const scratch = (e: React.PointerEvent<HTMLCanvasElement>) => {
@@ -58,7 +85,7 @@ export function ScratchCard({ onComplete }: Props) {
     const y = ((e.clientY - rect.top) / rect.height) * canvas.height;
     ctx.globalCompositeOperation = 'destination-out';
     ctx.beginPath();
-    ctx.arc(x, y, 24, 0, Math.PI * 2);
+    ctx.arc(x, y, 26, 0, Math.PI * 2);
     ctx.fill();
 
     const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
@@ -66,51 +93,74 @@ export function ScratchCard({ onComplete }: Props) {
     for (let i = 3; i < pixels.length; i += 16) {
       if (pixels[i] === 0) cleared++;
     }
-    if (cleared / (pixels.length / 16) > 0.4) {
+    if (cleared / (pixels.length / 16) > 0.35) {
       revealNow();
     }
   };
 
   return (
-    <div className="relative mx-auto flex h-[300px] w-[240px] flex-col items-center justify-center overflow-hidden rounded-3xl border-2 border-dashed border-[#10B981] bg-white p-5 text-center shadow-md">
-      <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-bold text-[#10B981]">
-        DESCONTO DESBLOQUEADO
-      </span>
-      <p className="mt-3 text-3xl font-extrabold text-[#0E3A47]">Até 70% OFF</p>
-      <p className="mt-1 text-sm font-semibold text-[#475569]">em seu plano personalizado</p>
-      <p className="mt-3 text-xs text-[#64748B]">Aplicado automaticamente no pagamento</p>
+    <div className="relative mx-auto w-[220px]">
+      {/* Ticket card */}
+      <div className="relative flex h-[270px] w-full flex-col justify-between overflow-hidden rounded-2xl bg-[#5C4E47] p-4 text-center text-white shadow-xl">
+        {/* Left & Right ticket notches */}
+        <span className="pointer-events-none absolute -left-2.5 top-[182px] h-5 w-5 rounded-full bg-[#FDFBF7]" />
+        <span className="pointer-events-none absolute -right-2.5 top-[182px] h-5 w-5 rounded-full bg-[#FDFBF7]" />
+
+        <div className="flex flex-1 flex-col items-center justify-center">
+          <p className="font-['Plus_Jakarta_Sans'] text-5xl font-extrabold leading-none tracking-tight">
+            50%
+          </p>
+          <p className="mt-1 text-lg font-bold">{t.funnel.step53.discountLabel}</p>
+          <p className="mt-1.5 text-[11px] leading-tight text-white/80">
+            {t.funnel.step53.discountSub}
+          </p>
+        </div>
+
+        <div className="border-t border-dashed border-white/30 pt-3">
+          <div className="rounded-xl bg-white px-3 py-2 text-[#1F1510]">
+            <span className="block text-[10px] font-medium text-[#6B5E57]">
+              {t.funnel.step53.promoLabel}
+            </span>
+            <span className="mt-0.5 flex items-center justify-center gap-1 text-xs font-bold text-[#1F1510]">
+              <Check size={13} className="text-[#3F6212]" />
+              {promoCode}
+            </span>
+          </div>
+        </div>
+
+        {!revealed && (
+          <canvas
+            ref={canvasRef}
+            width={220}
+            height={270}
+            style={{ touchAction: 'none' }}
+            className="absolute inset-0 h-full w-full cursor-pointer"
+            onPointerDown={(e) => {
+              e.currentTarget.setPointerCapture(e.pointerId);
+              scratching.current = true;
+              scratch(e);
+            }}
+            onPointerMove={scratch}
+            onPointerUp={() => {
+              scratching.current = false;
+            }}
+            onClick={revealNow}
+          />
+        )}
+      </div>
+
+      {/* Countdown note shown after reveal */}
       {revealed && (
-        <div className="mt-4 flex flex-col items-center gap-1">
-          <span className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#10B981] text-sm font-extrabold text-[#10B981]">
-            {countdown}s
-          </span>
+        <div className="mt-4 flex flex-col items-center gap-2 text-center">
+          <p className="text-xs font-medium text-[#6B5E57]">{t.funnel.step53.overlayNote}</p>
           <button
             type="button"
             onClick={onComplete}
-            className="text-xs font-bold text-[#0284C7] underline"
+            className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-[#2E1F19] text-xs font-extrabold text-[#2E1F19]"
           >
-            Ver minha oferta agora
+            {countdown}
           </button>
         </div>
-      )}
-      {!revealed && (
-        <canvas
-          ref={canvasRef}
-          width={240}
-          height={300}
-          style={{ touchAction: 'none' }}
-          className="absolute inset-0 h-full w-full cursor-pointer"
-          onPointerDown={(e) => {
-            e.currentTarget.setPointerCapture(e.pointerId);
-            scratching.current = true;
-            scratch(e);
-          }}
-          onPointerMove={scratch}
-          onPointerUp={() => {
-            scratching.current = false;
-          }}
-          onClick={revealNow}
-        />
       )}
     </div>
   );

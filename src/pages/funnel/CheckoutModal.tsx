@@ -1,7 +1,18 @@
 import { useState } from 'react';
-import { CheckCircle2, Lock, ShieldCheck, X } from 'lucide-react';
-import { CTAButton } from '../../components/CTAButton';
-import { recommendProtocol } from '../../engine/calculations';
+import {
+  Check,
+  CheckCircle2,
+  CreditCard,
+  Lock,
+  Tag,
+  X,
+  Zap,
+} from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { generatePromoCode, recommendProtocol } from '../../engine/calculations';
+import { formatMoney } from '../../i18n/config';
+import { interpolate } from '../../i18n/translations';
+import { useI18n } from '../../i18n/I18nProvider';
 import { today, useBestMeStore } from '../../store/useBestMeStore';
 
 interface Props {
@@ -9,36 +20,26 @@ interface Props {
   onClose: () => void;
 }
 
-const PLAN_PRICES = {
-  '1_month': { label: 'Plano Jejum Leve (1 mês)', full: 99, sale: 39.9 },
-  '4_months': { label: 'Plano Jejum Leve (4 meses)', full: 329, sale: 97.0 },
-  lifetime: { label: 'Plano Jejum Leve Vitalício', full: 499, sale: 297.0 },
-} as const;
-
 export function CheckoutModal({ open, onClose }: Props) {
-  const { funnel, setFunnel, setApp, addWeight } = useBestMeStore();
-  const [showExit, setShowExit] = useState(false);
+  const { t, locale, config, navigateView } = useI18n();
+  const { funnel, setApp, addWeight } = useBestMeStore();
   const [paidAnim, setPaidAnim] = useState(false);
-  const [method, setMethod] = useState<'pix' | 'card' | 'apple' | 'google'>('pix');
+  const [method, setMethod] = useState<'card' | 'apple' | 'pix'>('card');
 
-  if (!open) return null;
+  // Card fields state
+  const [cardNumber, setCardNumber] = useState('');
+  const [cardExpiry, setCardExpiry] = useState('');
+  const [cardCvv, setCardCvv] = useState('');
+  const [cardHolder, setCardHolder] = useState(funnel.name || '');
 
-  const plan = PLAN_PRICES[funnel.selectedPlan];
-  const finalTotal = funnel.extraDiscount ? plan.sale * 0.9 : plan.sale;
-  const discountValue = plan.full - finalTotal;
-
-  const handleCloseAttempt = () => {
-    if (!funnel.extraDiscount) {
-      setShowExit(true);
-    } else {
-      onClose();
-    }
-  };
+  const plan = config.plans[funnel.selectedPlan] ?? config.plans['4_weeks'];
+  const savedAmount = Math.max(0, plan.fullNum - plan.saleNum);
+  const promoCode = funnel.promoCode || generatePromoCode(funnel.name || 'wesley');
 
   const confirmPayment = () => {
     setPaidAnim(true);
     const sensitive =
-      funnel.healthConditions.length > 0 && !funnel.healthConditions.includes('Não, nenhum');
+      funnel.sensitivities.length > 0 && !funnel.sensitivities.includes(t.common.noneOption);
     const protocol = recommendProtocol({
       experience: funnel.fastingExperience ?? 'ouvi_falar',
       goalIntensity: funnel.goalIntensity ?? 'tentar',
@@ -49,171 +50,337 @@ export function CheckoutModal({ open, onClose }: Props) {
     }
     window.setTimeout(() => {
       setApp({ isPaid: true, protocol });
+      navigateView('app');
     }, 900);
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4">
-      <div className="relative max-h-[95vh] w-full max-w-[480px] overflow-y-auto rounded-t-3xl bg-[#F8FAFC] p-5 shadow-2xl sm:rounded-3xl">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-extrabold text-[#0E3A47]">
-            Selecione um método de pagamento seguro
-          </h2>
-          <button
-            onClick={handleCloseAttempt}
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#475569] shadow-sm"
-            aria-label="Fechar"
+    <AnimatePresence>
+      {open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5">
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={onClose}
+            className="fixed inset-0 bg-black/60 backdrop-blur-[2px]"
+          />
+
+          {/* Modal Container */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.94, y: 14 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.94, y: 14 }}
+            transition={{ type: 'spring', damping: 26, stiffness: 320 }}
+            className="relative z-10 max-h-[96vh] w-full max-w-[680px] overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl"
           >
-            <X size={18} />
-          </button>
-        </div>
+            {/* Close button */}
+            <motion.button
+              type="button"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.92 }}
+              onClick={onClose}
+              aria-label="Close"
+              className="absolute left-5 top-5 flex h-8 w-8 items-center justify-center rounded-full bg-[#F5EFE8] text-[#1F1510] transition hover:bg-[#EAE3DC]"
+            >
+              <X size={16} />
+            </motion.button>
 
-        <div className="mt-2 flex flex-wrap gap-1.5 text-[11px] font-bold text-[#475569]">
-          {['Visa', 'Mastercard', 'Elo', 'Amex', 'PIX'].map((b) => (
-            <span key={b} className="rounded bg-white px-2 py-0.5 shadow-sm">
-              {b}
-            </span>
-          ))}
-        </div>
+            {/* Modal Title */}
+            <h2 className="pt-1 text-center font-['Plus_Jakarta_Sans'] text-xl font-extrabold text-[#1F1510] sm:text-2xl">
+              {locale === 'pt' ? 'Complete seu checkout' : t.funnel.checkout.title}
+            </h2>
 
-        <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm">
-          <div className="inline-block rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-bold text-[#10B981]">
-            🏷️ Código aplicado: {funnel.extraDiscount ? 'DESCONTO_EXTRA10' : 'DESCONTO70_HOJE'}
-          </div>
-          <div className="mt-3 flex justify-between text-sm text-[#475569]">
-            <span>{plan.label}</span>
-            <span>R$ {plan.full.toFixed(2).replace('.', ',')}</span>
-          </div>
-          <div className="mt-1 flex justify-between text-sm font-semibold text-[#EF4444]">
-            <span>Desconto {funnel.extraDiscount ? '(70% + 10% extra)' : '(70%)'}</span>
-            <span>- R$ {discountValue.toFixed(2).replace('.', ',')}</span>
-          </div>
-          <div className="mt-3 flex justify-between border-t border-slate-100 pt-2 text-lg font-extrabold text-[#0E3A47]">
-            <span>Total</span>
-            <span>R$ {finalTotal.toFixed(2).replace('.', ',')}</span>
-          </div>
-        </div>
+            {/* 2-Column Content */}
+            <div className="mt-6 grid gap-6 md:grid-cols-2">
+              {/* Left Column: Order Summary */}
+              <div className="flex flex-col justify-between rounded-2xl border border-[#EAE3DC] bg-[#FAF8F5] p-5">
+                <div>
+                  <h3 className="font-['Plus_Jakarta_Sans'] text-sm font-extrabold text-[#1F1510]">
+                    {t.funnel.checkout.summaryTitle}
+                  </h3>
 
-        <div className="mt-4 grid grid-cols-3 gap-2">
-          <button
-            onClick={() => setMethod('pix')}
-            className={`rounded-xl py-2.5 text-xs font-bold text-white ${
-              method === 'pix' ? 'ring-2 ring-[#0E3A47]' : ''
-            } bg-[#10B981]`}
-          >
-            PIX Instantâneo
-          </button>
-          <button
-            onClick={() => setMethod('apple')}
-            className={`rounded-xl bg-black py-2.5 text-xs font-bold text-white ${
-              method === 'apple' ? 'ring-2 ring-[#10B981]' : ''
-            }`}
-          >
-            Apple Pay
-          </button>
-          <button
-            onClick={() => setMethod('google')}
-            className={`rounded-xl bg-[#0E3A47] py-2.5 text-xs font-bold text-white ${
-              method === 'google' ? 'ring-2 ring-[#10B981]' : ''
-            }`}
-          >
-            Google Pay
-          </button>
-        </div>
+                  <div className="mt-4 space-y-2 text-xs">
+                    <div className="flex justify-between text-[#6B5E57]">
+                      <span>{t.funnel.checkout.regularPrice}</span>
+                      <span className="font-semibold text-[#1F1510]">{plan.full}</span>
+                    </div>
+                    <div className="flex justify-between font-semibold text-[#DC2626]">
+                      <span>{t.funnel.checkout.initialDiscount}</span>
+                      <span>-{formatMoney(savedAmount, locale)}</span>
+                    </div>
+                  </div>
 
-        <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm">
-          <button
-            type="button"
-            onClick={() => setMethod('card')}
-            className="mb-3 text-sm font-bold text-[#0E3A47]"
-          >
-            💳 Cartão de Crédito
-          </button>
-          <div className="flex flex-col gap-2.5 text-sm">
-            <input
-              placeholder="Número do cartão"
-              className="rounded-xl border border-[#E2E8F0] px-3 py-2.5 outline-none focus:border-[#10B981]"
-            />
-            <div className="grid grid-cols-2 gap-2.5">
-              <input
-                placeholder="Validade (MM/AA)"
-                className="rounded-xl border border-[#E2E8F0] px-3 py-2.5 outline-none focus:border-[#10B981]"
-              />
-              <input
-                placeholder="CVV"
-                className="rounded-xl border border-[#E2E8F0] px-3 py-2.5 outline-none focus:border-[#10B981]"
-              />
-            </div>
-            <input
-              placeholder="Nome do titular"
-              className="rounded-xl border border-[#E2E8F0] px-3 py-2.5 outline-none focus:border-[#10B981]"
-            />
-          </div>
-        </div>
-
-        <div className="mt-4">
-          {paidAnim ? (
-            <div className="flex items-center justify-center gap-2 rounded-full bg-[#10B981] py-4 font-bold text-white">
-              <CheckCircle2 size={20} /> Pagamento aprovado! Abrindo App...
-            </div>
-          ) : (
-            <CTAButton onClick={confirmPayment}>Pagar Agora</CTAButton>
-          )}
-        </div>
-
-        <div className="mt-4 flex flex-col items-center gap-1 text-center text-xs text-[#64748B]">
-          <span className="flex items-center gap-1 font-bold text-[#10B981]">
-            <ShieldCheck size={16} /> Garantido: PAGAMENTO SEGURO
-          </span>
-          <span className="flex items-center gap-1">
-            <Lock size={12} /> Criptografia SSL • Cancele quando quiser
-          </span>
-        </div>
-
-        {showExit && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-            <div className="w-full max-w-[420px] rounded-3xl bg-white p-6 text-center shadow-2xl">
-              <h3 className="text-xl font-extrabold text-[#0E3A47]">Você sabia? 🤔</h3>
-              <p className="mt-2 text-sm text-[#475569]">
-                <strong>68%</strong> de quem começou perdeu pelo menos <strong>5 kg</strong> no
-                primeiro mês com o Jejum Leve.
-              </p>
-              <div className="mt-4 grid grid-cols-2 gap-3 text-xs font-bold">
-                <div className="rounded-xl bg-slate-100 p-3 text-[#475569]">
-                  Sem Jejum Leve
-                  <div className="mt-2 h-2 rounded bg-slate-300" />
+                  {/* Promo code badge */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.15 }}
+                    className="mt-4 rounded-xl bg-white p-3 border border-[#EAE3DC] text-xs shadow-xs"
+                  >
+                    <span className="block text-[11px] text-[#6B5E57]">
+                      {t.funnel.checkout.appliedPromo}
+                    </span>
+                    <span className="mt-1 flex items-center gap-1.5 font-mono font-bold text-[#1F1510]">
+                      <Tag size={13} className="text-[#3F6212]" /> {promoCode}
+                    </span>
+                  </motion.div>
                 </div>
-                <div className="rounded-xl bg-[#ECFDF5] p-3 text-[#10B981]">
-                  Com Jejum Leve
-                  <div className="mt-2 h-2 rounded bg-[#10B981]" />
+
+                <div className="mt-6 border-t border-[#EAE3DC] pt-4">
+                  <div className="flex items-center justify-between text-base font-extrabold text-[#1F1510]">
+                    <span>{t.funnel.checkout.totalToPay}</span>
+                    <span className="text-lg font-black text-[#1F1510]">{plan.sale}</span>
+                  </div>
+
+                  <div className="mt-2.5 flex items-start gap-1.5 rounded-lg bg-rose-50 p-2 text-[11px] font-bold leading-tight text-[#DC2626]">
+                    <Zap size={14} className="mt-0.5 shrink-0 fill-current text-[#DC2626]" />
+                    <span>
+                      {interpolate(t.funnel.checkout.savingsBanner, {
+                        saved: formatMoney(savedAmount, locale),
+                      })}
+                    </span>
+                  </div>
                 </div>
               </div>
-              <p className="mt-4 text-sm font-bold text-[#EF4444]">
-                Ganhe +10% de DESCONTO EXTRA agora!
-              </p>
-              <div className="mt-4 flex flex-col gap-2">
-                <CTAButton
-                  onClick={() => {
-                    setFunnel({ extraDiscount: true });
-                    setShowExit(false);
-                  }}
+
+              {/* Right Column: Payment Methods */}
+              <div className="flex flex-col gap-3">
+                {/* Quick Apple Pay */}
+                <motion.div
+                  whileTap={{ scale: 0.99 }}
+                  onClick={() => setMethod('apple')}
+                  className={`cursor-pointer rounded-2xl border p-3.5 transition-colors ${
+                    method === 'apple' ? 'border-[#1F1510] bg-[#FAF8F5]' : 'border-[#EAE3DC] bg-white'
+                  }`}
                 >
-                  Aproveitar Desconto Extra!
-                </CTAButton>
-                <button
-                  onClick={() => {
-                    setShowExit(false);
-                    onClose();
-                  }}
-                  className="text-xs font-semibold text-[#64748B] underline"
+                  <div className="flex items-center justify-between text-xs font-bold text-[#1F1510]">
+                    <span className="flex items-center gap-2">
+                      <span
+                        className={`flex h-4 w-4 items-center justify-center rounded-full border ${
+                          method === 'apple'
+                            ? 'border-[#1F1510] bg-[#1F1510] text-white'
+                            : 'border-[#D5CCC3]'
+                        }`}
+                      >
+                        {method === 'apple' && <Check size={10} strokeWidth={3} />}
+                      </span>
+                      <span>{t.funnel.checkout.expressCheckout}</span>
+                    </span>
+                    <span className="rounded bg-black px-2 py-0.5 text-[11px] font-bold text-white">
+                       Pay
+                    </span>
+                  </div>
+
+                  {method === 'apple' && (
+                    <motion.button
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      type="button"
+                      whileHover={{ scale: 1.01 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={confirmPayment}
+                      className="mt-3 w-full rounded-xl bg-black py-2.5 text-xs font-bold text-white transition hover:bg-neutral-800"
+                    >
+                      Buy with Pay
+                    </motion.button>
+                  )}
+                </motion.div>
+
+                {/* Credit Card (Primary) */}
+                <motion.div
+                  whileTap={{ scale: 0.99 }}
+                  onClick={() => setMethod('card')}
+                  className={`cursor-pointer rounded-2xl border p-4 transition-colors ${
+                    method === 'card'
+                      ? 'border-[#1F1510] bg-white ring-1 ring-[#1F1510]'
+                      : 'border-[#EAE3DC] bg-white'
+                  }`}
                 >
-                  Não, quero sair mesmo
-                </button>
+                  <div className="flex items-center justify-between text-xs font-bold text-[#1F1510]">
+                    <span className="flex items-center gap-2">
+                      <span
+                        className={`flex h-4 w-4 items-center justify-center rounded-full border ${
+                          method === 'card'
+                            ? 'border-[#1F1510] bg-[#1F1510] text-white'
+                            : 'border-[#D5CCC3]'
+                        }`}
+                      >
+                        {method === 'card' && <Check size={10} strokeWidth={3} />}
+                      </span>
+                      <span>{t.funnel.checkout.creditCard}</span>
+                    </span>
+                  </div>
+
+                  {/* Card brand badges as seen in screenshot */}
+                  <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+                    <span className="rounded bg-[#1A1F71] px-1.5 py-0.5 text-[9px] font-black italic text-white tracking-wider">
+                      VISA
+                    </span>
+                    <span className="flex items-center rounded bg-[#EB001B] px-1.5 py-0.5 text-[9px] font-black text-white">
+                      <span className="h-2 w-2 rounded-full bg-[#EB001B] inline-block -mr-1"></span>
+                      <span className="h-2 w-2 rounded-full bg-[#F79E1B] inline-block"></span>
+                    </span>
+                    <span className="rounded bg-[#006FCF] px-1.5 py-0.5 text-[9px] font-black text-white">
+                      AMEX
+                    </span>
+                    <span className="rounded bg-[#FF6000] px-1.5 py-0.5 text-[9px] font-bold text-white">
+                      DISCOVER
+                    </span>
+                    <span className="rounded bg-black px-1.5 py-0.5 text-[9px] font-extrabold text-white">
+                      elo
+                    </span>
+                    <span className="rounded bg-[#B3141A] px-1.5 py-0.5 text-[9px] font-bold text-white">
+                      Hipercard
+                    </span>
+                  </div>
+
+                  {method === 'card' && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      transition={{ duration: 0.2 }}
+                      className="mt-3.5 space-y-2.5 text-xs"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div>
+                        <label className="mb-1 block text-[11px] font-bold text-[#6B5E57]">
+                          {t.funnel.checkout.cardNumber}
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="text"
+                            maxLength={19}
+                            value={cardNumber}
+                            onChange={(e) => setCardNumber(e.target.value)}
+                            placeholder="XXXX XXXX XXXX XXXX"
+                            className="w-full rounded-xl border border-[#D5CCC3] bg-white px-3 py-2 pr-9 text-xs font-mono text-[#1F1510] outline-none transition focus:border-[#00B67A] focus:ring-1 focus:ring-[#00B67A]"
+                          />
+                          <CreditCard
+                            size={16}
+                            className="absolute right-3 top-2.5 text-[#A89E97]"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="mb-1 block text-[11px] font-bold text-[#6B5E57]">
+                            {t.funnel.checkout.expiry}
+                          </label>
+                          <input
+                            type="text"
+                            maxLength={5}
+                            value={cardExpiry}
+                            onChange={(e) => setCardExpiry(e.target.value)}
+                            placeholder="MM/AA"
+                            className="w-full rounded-xl border border-[#D5CCC3] bg-white px-3 py-2 text-xs font-mono text-[#1F1510] outline-none transition focus:border-[#00B67A] focus:ring-1 focus:ring-[#00B67A]"
+                          />
+                        </div>
+                        <div>
+                          <label className="mb-1 block text-[11px] font-bold text-[#6B5E57]">
+                            {t.funnel.checkout.cvv}
+                          </label>
+                          <input
+                            type="text"
+                            maxLength={4}
+                            value={cardCvv}
+                            onChange={(e) => setCardCvv(e.target.value)}
+                            placeholder="CVV"
+                            className="w-full rounded-xl border border-[#D5CCC3] bg-white px-3 py-2 text-xs font-mono text-[#1F1510] outline-none transition focus:border-[#00B67A] focus:ring-1 focus:ring-[#00B67A]"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="mb-1 block text-[11px] font-bold text-[#6B5E57]">
+                          {t.funnel.checkout.cardHolder}
+                        </label>
+                        <input
+                          type="text"
+                          value={cardHolder}
+                          onChange={(e) => setCardHolder(e.target.value)}
+                          placeholder="Nome completo como no cartão"
+                          className="w-full rounded-xl border border-[#D5CCC3] bg-white px-3 py-2 text-xs text-[#1F1510] outline-none transition focus:border-[#00B67A] focus:ring-1 focus:ring-[#00B67A]"
+                        />
+                      </div>
+                    </motion.div>
+                  )}
+                </motion.div>
+
+                {/* PIX for Brazilian visitors */}
+                {config.hasPix && (
+                  <motion.div
+                    whileTap={{ scale: 0.99 }}
+                    onClick={() => setMethod('pix')}
+                    className={`cursor-pointer rounded-2xl border p-3.5 transition-colors ${
+                      method === 'pix' ? 'border-[#1F1510] bg-[#FAF8F5]' : 'border-[#EAE3DC] bg-white'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between text-xs font-bold text-[#1F1510]">
+                      <span className="flex items-center gap-2">
+                        <span
+                          className={`flex h-4 w-4 items-center justify-center rounded-full border ${
+                            method === 'pix'
+                              ? 'border-[#1F1510] bg-[#1F1510] text-white'
+                              : 'border-[#D5CCC3]'
+                          }`}
+                        >
+                          {method === 'pix' && <Check size={10} strokeWidth={3} />}
+                        </span>
+                        <span>{t.funnel.checkout.payWithPix}</span>
+                      </span>
+                      <span className="rounded bg-[#EBF3E4] px-2 py-0.5 text-[10px] font-extrabold text-[#3F6212]">
+                        PIX Instantâneo
+                      </span>
+                    </div>
+                  </motion.div>
+                )}
               </div>
             </div>
-          </div>
-        )}
-      </div>
-    </div>
+
+            {/* Green CTA Button */}
+            <div className="mt-6">
+              {paidAnim ? (
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="flex items-center justify-center gap-2 rounded-xl bg-[#00B67A] py-3.5 text-sm font-extrabold text-white shadow-lg"
+                >
+                  <CheckCircle2 size={18} /> {t.funnel.checkout.approvedMsg}
+                </motion.div>
+              ) : (
+                <motion.button
+                  type="button"
+                  whileHover={{ scale: 1.015 }}
+                  whileTap={{ scale: 0.985 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                  onClick={confirmPayment}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#00B67A] py-3.5 text-center text-sm font-black uppercase tracking-wider text-white shadow-md transition hover:bg-[#009E69]"
+                >
+                  <Lock size={16} className="stroke-[2.5]" />
+                  <span>{locale === 'pt' ? 'OBTER O MEU PLANO' : t.funnel.checkout.payNowBtn}</span>
+                </motion.button>
+              )}
+            </div>
+
+            {/* Trust Badges Footer */}
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-3 border-t border-[#F0EBE4] pt-3 text-[10px] text-[#8C8078]">
+              <span className="flex items-center gap-1 font-bold">
+                <Lock size={10} className="text-[#00B67A]" /> SECURED 256-BIT ENCRYPTION
+              </span>
+              <span>•</span>
+              <span className="font-bold">VISA Secure</span>
+              <span>•</span>
+              <span className="font-bold">Mastercard ID Check</span>
+              <span>•</span>
+              <span className="font-bold">PCI DSS COMPLIANT</span>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
   );
 }

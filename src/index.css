@@ -4,15 +4,16 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
   background-color: var(--color-bg-primary);
-  background-image:
-    radial-gradient(circle at 50% 42%, rgba(230, 247, 244, 0.82) 0%, rgba(230, 247, 244, 0.28) 72%, rgba(230, 247, 244, 0.12) 100%),
-    url('/assets/bg-lime.png');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
   font-family: var(--font-body);
   color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
