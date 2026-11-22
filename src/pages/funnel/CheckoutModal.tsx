@@ -104,7 +104,11 @@ export function CheckoutModal({ open, onClose }: Props) {
 
                   <div className="mt-4 space-y-2 text-xs">
                     <div className="flex justify-between text-[#6B5E57]">
-                      <span>{t.funnel.checkout.regularPrice}</span>
+                      <span>
+                        {funnel.selectedPlan === '7_days_trial'
+                          ? 'Preço de teste (7 dias)'
+                          : t.funnel.checkout.regularPrice}
+                      </span>
                       <span className="font-semibold text-[#1F1510]">{plan.full}</span>
                     </div>
                     <div className="flex justify-between font-semibold text-[#DC2626]">

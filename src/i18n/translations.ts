@@ -432,6 +432,16 @@ export interface TranslationDict {
       plan12Title: string;
       perDay: string;
       getMyPlan: string;
+      exitModalTitle: string;
+      exitModalSubtitle: string;
+      exitModalCallout: string;
+      exitModalNote: string;
+      exitModalCta: string;
+      trialHeroTitle: string;
+      trialHeroSub: string;
+      trialStartCta: string;
+      trialLegal: string;
+      trialSeeOtherPlans: string;
       legalSubscription: string;
       manageSub: string;
       includedTitle: string;
@@ -1093,6 +1103,16 @@ const PT: TranslationDict = {
       plan12Title: 'Plano de 12 Semanas',
       perDay: 'por dia',
       getMyPlan: 'OBTER O MEU PLANO',
+      exitModalTitle: 'Ainda não tem certeza?',
+      exitModalSubtitle: 'Com base em suas respostas, criamos um plano de 7 dias personalizado para que você possa ter certeza que somos a escolha certa!',
+      exitModalCallout: 'Acreditamos que este plano pode mudar sua vida, mas ter dúvidas é normal. Então, por que não se comprometer por apenas uma semana?',
+      exitModalNote: 'Experimente nosso serviço por 7 dias e decida depois se quer continuar. P.S. Você pode cancelar a assinatura pelo site ou pelo app!',
+      exitModalCta: 'COMEÇAR MEU TESTE DE 7 DIAS',
+      trialHeroTitle: 'Comece seu teste de 7 dias por {{price}}',
+      trialHeroSub: 'depois {{renewalPrice}} por 4 semanas',
+      trialStartCta: 'INICIAR TESTE',
+      trialLegal: 'Se eu não cancelar antes do fim do período de teste de 7 dias, concordo que ele será convertido em uma assinatura de 4 semanas e que a BestMe cobrará automaticamente {{renewalPrice}} a cada 4 semanas até que eu cancele. Cancele online pela página gerenciar assinatura no site ou no aplicativo.',
+      trialSeeOtherPlans: 'Ver todos os planos disponíveis',
       legalSubscription: 'Caso eu não cancele antes do fim do plano selecionado, concordo que a BestMe cobrará automaticamente o valor regular do plano até que eu cancele. Cancele online pela página',
       manageSub: 'Gerenciar assinatura',
       includedTitle: 'O que está incluído no seu plano',
@@ -1767,6 +1787,16 @@ const US: TranslationDict = {
       plan12Title: '12-Week Plan',
       perDay: 'per day',
       getMyPlan: 'GET MY PLAN',
+      exitModalTitle: 'Still not sure?',
+      exitModalSubtitle: 'Based on your answers, we created a customized 7-day plan so you can be sure we are the right fit!',
+      exitModalCallout: 'We believe this plan can transform your life, but doubts are normal. So why not commit to just one week?',
+      exitModalNote: 'Try our service for 7 days and decide afterwards. P.S. You can easily cancel anytime via web or app!',
+      exitModalCta: 'START MY 7-DAY TRIAL',
+      trialHeroTitle: 'Start your 7-day trial for {{price}}',
+      trialHeroSub: 'then {{renewalPrice}} every 4 weeks',
+      trialStartCta: 'START TRIAL',
+      trialLegal: 'Unless I cancel before the end of the 7-day trial period, I agree it will convert into a 4-week subscription and BestMe will automatically charge {{renewalPrice}} every 4 weeks until I cancel. Cancel online anytime.',
+      trialSeeOtherPlans: 'View all available plans',
       legalSubscription: 'Unless I cancel before the end of the selected plan, I agree BestMe will automatically charge the regular rate until canceled. Cancel online via',
       manageSub: 'Manage subscription',
       includedTitle: 'What is included in your plan',
@@ -2029,6 +2059,16 @@ const ES: TranslationDict = {
       muscleStrength: 'Fuerza muscular', strengthNow: 'Media', strengthGoal: 'Alta', calisthenicsLevel: 'Nivel de calistenia', levelNow: 'Intermedio', levelGoal: 'Avanzado',
       choosePlanTitle: 'Elige tu plan', promoAppliedTitle: '¡Tu código promocional fue aplicado!', mostPopular: 'MÁS POPULAR',
       plan1Title: 'Prueba de 1 semana', plan1Sub: 'PLAN DE 4 SEMANAS', plan4Title: 'Plan de 4 Semanas', plan12Title: 'Plan de 12 Semanas', perDay: 'al día', getMyPlan: 'OBTENER MI PLAN',
+      exitModalTitle: '¿Aún no estás seguro?',
+      exitModalSubtitle: '¡Según tus respuestas, creamos un plan personalizado de 7 días para que compruebes los resultados!',
+      exitModalCallout: 'Sabemos que dar el primer paso genera dudas. ¿Por qué no probar solo una semana?',
+      exitModalNote: 'Prueba 7 días y decide luego. Puedes cancelar cuando quieras desde la web o la app.',
+      exitModalCta: 'COMENZAR MI PRUEBA DE 7 DÍAS',
+      trialHeroTitle: 'Comienza tu prueba de 7 días por {{price}}',
+      trialHeroSub: 'después {{renewalPrice}} cada 4 semanas',
+      trialStartCta: 'INICIAR PRUEBA',
+      trialLegal: 'Si no cancelo antes del fin del período de prueba de 7 días, acepto que se convertirá en una suscripción de 4 semanas cobrando automáticamente {{renewalPrice}} cada 4 semanas hasta cancelar.',
+      trialSeeOtherPlans: 'Ver todos los planes disponibles',
       legalSubscription: 'Si no cancelo antes del fin del plan seleccionado, acepto que BestMe cobrará el monto regular automáticamente hasta cancelar desde', manageSub: 'Gestionar suscripción',
       includedTitle: 'Qué incluye tu plan',
       features: [
@@ -2196,6 +2236,16 @@ const FR: TranslationDict = {
       muscleStrength: 'Force musculaire', strengthNow: 'Moyenne', strengthGoal: 'Élevée', calisthenicsLevel: 'Niveau callisthénie', levelNow: 'Intermédiaire', levelGoal: 'Avancé',
       choosePlanTitle: 'Choisissez votre plan', promoAppliedTitle: 'Votre code promo a été appliqué !', mostPopular: 'LE PLUS POPULAIRE',
       plan1Title: 'Essai 1 semaine', plan1Sub: 'PLAN 4 SEMANES', plan4Title: 'Plan 4 Semaines', plan12Title: 'Plan 12 Semaines', perDay: 'par jour', getMyPlan: 'OBTENIR MON PLAN',
+      exitModalTitle: 'Encore une hésitation ?',
+      exitModalSubtitle: 'D’après vos réponses, nous avons préparé un plan d’essai de 7 jours pour tester sans engagement !',
+      exitModalCallout: 'Il est normal d’avoir des doutes. Pourquoi ne pas essayer pendant seulement une semaine ?',
+      exitModalNote: 'Testez pendant 7 jours et décidez ensuite. Annulation facile via le site ou l’app.',
+      exitModalCta: 'COMMENCER MON ESSAI DE 7 JOURS',
+      trialHeroTitle: 'Commencez votre essai de 7 jours pour {{price}}',
+      trialHeroSub: 'puis {{renewalPrice}} toutes les 4 semaines',
+      trialStartCta: 'COMMENCER L’ESSAI',
+      trialLegal: 'Sauf annulation avant la fin des 7 jours d’essai, l’abonnement se renouvelle automatiquement au tarif de {{renewalPrice}} toutes les 4 semaines.',
+      trialSeeOtherPlans: 'Voir tous les plans disponibles',
       legalSubscription: 'Sauf annulation avant la fin du plan, BestMe renouvellera automatiquement au tarif standard. Gérez via', manageSub: 'Gérer l’abonnement',
       includedTitle: 'Inclus dans votre plan',
       features: [
@@ -2363,6 +2413,16 @@ const DE: TranslationDict = {
       muscleStrength: 'Muskelkraft', strengthNow: 'Mittel', strengthGoal: 'Hoch', calisthenicsLevel: 'Calisthenics-Level', levelNow: 'Mittelstufe', levelGoal: 'Fortgeschritten',
       choosePlanTitle: 'Wählen Sie Ihren Plan', promoAppliedTitle: 'Gutscheincode wurde aktiviert!', mostPopular: 'BELIEBTESTER',
       plan1Title: '1-Woche-Test', plan1Sub: '4-WOCHEN-PLAN', plan4Title: '4-Wochen-Plan', plan12Title: '12-Wochen-Plan', perDay: 'pro Tag', getMyPlan: 'MEINEN PLAN SICHERN',
+      exitModalTitle: 'Noch unsicher?',
+      exitModalSubtitle: 'Basierend auf Ihren Antworten haben wir einen 7-Tage-Testplan erstellt, damit Sie sich selbst überzeugen können!',
+      exitModalCallout: 'Zweifel sind völlig normal. Warum nicht einfach für eine Woche unverbindlich starten?',
+      exitModalNote: 'Testen Sie 7 Tage und entscheiden Sie dann. Jederzeit online oder per App kündbar.',
+      exitModalCta: 'MEINEN 7-TAGE-TEST STARTEN',
+      trialHeroTitle: 'Starten Sie Ihren 7-Tage-Test für {{price}}',
+      trialHeroSub: 'danach {{renewalPrice}} alle 4 Wochen',
+      trialStartCta: 'TEST STARTEN',
+      trialLegal: 'Sofern nicht vor Ablauf des 7-Tage-Tests gekündigt, verlängert sich das Abo automatisch zum Preis von {{renewalPrice}} alle 4 Wochen.',
+      trialSeeOtherPlans: 'Alle Pläne anzeigen',
       legalSubscription: 'Sofern nicht rechtzeitig gekündigt, verlängert BestMe automatisch zum regulären Preis. Kündigung über', manageSub: 'Abo verwalten',
       includedTitle: 'In Ihrem Plan enthalten',
       features: [
@@ -2530,6 +2590,16 @@ const IT: TranslationDict = {
       muscleStrength: 'Forza muscolare', strengthNow: 'Media', strengthGoal: 'Alta', calisthenicsLevel: 'Livello calisthenics', levelNow: 'Intermedio', levelGoal: 'Avanzato',
       choosePlanTitle: 'Scegli il tuo piano', promoAppliedTitle: 'Codice promo applicato!', mostPopular: 'PIÙ POPOLARE',
       plan1Title: 'Prova 1 settimana', plan1Sub: 'PIANO 4 SETTIMANE', plan4Title: 'Piano 4 Settimane', plan12Title: 'Piano 12 Settimane', perDay: 'al giorno', getMyPlan: 'OTTIENI IL PIANO',
+      exitModalTitle: 'Non sei ancora sicuro?',
+      exitModalSubtitle: 'In base alle tue risposte, abbiamo creato un piano di prova di 7 giorni per farti vedere i primi risultati!',
+      exitModalCallout: 'Avere dubbi è normale. Perché non impegnarsi solo per una settimana di prova?',
+      exitModalNote: 'Prova 7 giorni e decidi dopo. Puoi disdire in qualunque momento via web o app.',
+      exitModalCta: 'INIZIA LA MIA PROVA DI 7 GIORNI',
+      trialHeroTitle: 'Inizia la tua prova di 7 giorni per {{price}}',
+      trialHeroSub: 'poi {{renewalPrice}} ogni 4 settimane',
+      trialStartCta: 'INIZIA LA PROVA',
+      trialLegal: 'Salvo disdetta prima del termine dei 7 giorni di prova, l’abbonamento si rinnoverà automaticamente a {{renewalPrice}} ogni 4 settimane.',
+      trialSeeOtherPlans: 'Mostra tutti i piani disponibili',
       legalSubscription: 'Salvo disdetta prima della scadenza, l’abbonamento si rinnova al prezzo standard. Gestisci su', manageSub: 'Gestisci abbonamento',
       includedTitle: 'Cosa include il tuo piano',
       features: [

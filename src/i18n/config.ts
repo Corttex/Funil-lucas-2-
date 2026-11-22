@@ -21,6 +21,7 @@ export interface LocaleConfig {
   currencyCode: string;
   hasPix: boolean;
   plans: {
+    '7_days_trial': PlanPricing;
     '1_week': PlanPricing;
     '4_weeks': PlanPricing;
     '12_weeks': PlanPricing;
@@ -41,6 +42,14 @@ export const LOCALE_CONFIG: Record<Locale, LocaleConfig> = {
     currencyCode: 'BRL',
     hasPix: true,
     plans: {
+      '7_days_trial': {
+        full: 'R$19,99',
+        sale: 'R$5,99',
+        fullNum: 19.99,
+        saleNum: 5.99,
+        perDayFull: 'R$2,86',
+        perDay: 'R$0,86',
+      },
       '1_week': {
         full: 'R$40,00',
         sale: 'R$19,99',
@@ -78,6 +87,14 @@ export const LOCALE_CONFIG: Record<Locale, LocaleConfig> = {
     currencyCode: 'USD',
     hasPix: false,
     plans: {
+      '7_days_trial': {
+        full: 'R$19,99',
+        sale: 'R$5,99',
+        fullNum: 19.99,
+        saleNum: 5.99,
+        perDayFull: 'R$2,86',
+        perDay: 'R$0,86',
+      },
       '1_week': {
         full: '$19.98',
         sale: '$9.99',
@@ -115,6 +132,14 @@ export const LOCALE_CONFIG: Record<Locale, LocaleConfig> = {
     currencyCode: 'EUR',
     hasPix: false,
     plans: {
+      '7_days_trial': {
+        full: 'R$19,99',
+        sale: 'R$5,99',
+        fullNum: 19.99,
+        saleNum: 5.99,
+        perDayFull: 'R$2,86',
+        perDay: 'R$0,86',
+      },
       '1_week': {
         full: '€19,98',
         sale: '€9,99',
@@ -152,6 +177,14 @@ export const LOCALE_CONFIG: Record<Locale, LocaleConfig> = {
     currencyCode: 'EUR',
     hasPix: false,
     plans: {
+      '7_days_trial': {
+        full: 'R$19,99',
+        sale: 'R$5,99',
+        fullNum: 19.99,
+        saleNum: 5.99,
+        perDayFull: 'R$2,86',
+        perDay: 'R$0,86',
+      },
       '1_week': {
         full: '€19,98',
         sale: '€9,99',
@@ -189,6 +222,14 @@ export const LOCALE_CONFIG: Record<Locale, LocaleConfig> = {
     currencyCode: 'EUR',
     hasPix: false,
     plans: {
+      '7_days_trial': {
+        full: 'R$19,99',
+        sale: 'R$5,99',
+        fullNum: 19.99,
+        saleNum: 5.99,
+        perDayFull: 'R$2,86',
+        perDay: 'R$0,86',
+      },
       '1_week': {
         full: '€19,98',
         sale: '€9,99',
@@ -226,6 +267,14 @@ export const LOCALE_CONFIG: Record<Locale, LocaleConfig> = {
     currencyCode: 'EUR',
     hasPix: false,
     plans: {
+      '7_days_trial': {
+        full: 'R$19,99',
+        sale: 'R$5,99',
+        fullNum: 19.99,
+        saleNum: 5.99,
+        perDayFull: 'R$2,86',
+        perDay: 'R$0,86',
+      },
       '1_week': {
         full: '€19,98',
         sale: '€9,99',

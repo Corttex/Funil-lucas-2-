@@ -32,7 +32,7 @@ export interface FunnelData {
   healthConditions: string[];
   email: string;
   signature: string | null;
-  selectedPlan: '1_week' | '4_weeks' | '12_weeks';
+  selectedPlan: '1_week' | '4_weeks' | '12_weeks' | '7_days_trial';
   extraDiscount: boolean;
 
   // Campos específicos do funil de Calistenia

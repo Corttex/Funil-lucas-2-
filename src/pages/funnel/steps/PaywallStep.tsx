@@ -1,21 +1,28 @@
 import { useEffect, useState } from 'react';
 import {
+  Activity,
+  Ban,
   Check,
   ChevronDown,
   Dumbbell,
+  Flame,
   GraduationCap,
+  Heart,
   ShieldCheck,
   Smartphone,
   Sparkles,
   Star,
   Timer,
+  TrendingUp,
   Utensils,
+  X,
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { CTAButton } from '../../../components/CTAButton';
 import { AVATARS } from '../../../data/avatars';
 import { generatePromoCode } from '../../../engine/calculations';
 import { useI18n } from '../../../i18n/I18nProvider';
+import { interpolate } from '../../../i18n/translations';
 import { useBestMeStore } from '../../../store/useBestMeStore';
 import { CheckoutModal } from '../CheckoutModal';
 
@@ -29,12 +36,29 @@ export function PaywallStep() {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
+  // Exit intent & Downsell 7-day trial states (Imagens 1 e 2)
+  const [showExitModal, setShowExitModal] = useState(false);
+  const [trialMode, setTrialMode] = useState(false);
+  const [exitTriggered, setExitTriggered] = useState(false);
+
   useEffect(() => {
     const id = window.setInterval(() => {
       setSecondsLeft((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
     return () => window.clearInterval(id);
   }, []);
+
+  // Exit intent detection (cursor indo em direção ao topo da página no desktop)
+  useEffect(() => {
+    const handleMouseLeave = (e: MouseEvent) => {
+      if (e.clientY <= 20 && !exitTriggered && !trialMode) {
+        setExitTriggered(true);
+        setShowExitModal(true);
+      }
+    };
+    document.addEventListener('mouseleave', handleMouseLeave);
+    return () => document.removeEventListener('mouseleave', handleMouseLeave);
+  }, [exitTriggered, trialMode]);
 
   const mins = String(Math.floor(secondsLeft / 60)).padStart(2, '0');
   const secs = String(secondsLeft % 60).padStart(2, '0');
@@ -64,19 +88,24 @@ export function PaywallStep() {
     },
   ];
 
+  const handleStartTrial = () => {
+    setShowExitModal(false);
+    setTrialMode(true);
+    setFunnel({ selectedPlan: '7_days_trial' });
+    setCheckoutOpen(true);
+  };
+
   const PricingCardsBlock = () => (
     <div className="flex flex-col gap-3">
       {/* Green promo code banner */}
-      <div className="rounded-2xl border border-[#C9DFB8] bg-[#EBF3E4] p-3">
-        <p className="text-center text-xs font-bold text-[#1F1510]">
-          🏷️ {t.funnel.paywall.promoAppliedTitle}
+      <div className="rounded-2xl border border-[#C9DFB8] bg-[#EBF3E4] p-3 text-center">
+        <p className="text-xs font-bold text-[#3F6212]">
+          ✨ {t.funnel.paywall.promoAppliedTitle}
         </p>
-        <div className="mt-2 flex items-center justify-between gap-2 rounded-xl bg-white px-3 py-2">
-          <span className="flex items-center gap-1.5 text-xs font-extrabold text-[#1F1510]">
-            <Check size={14} className="text-[#3F6212]" /> {promoCode}
-          </span>
-          <span className="rounded-lg bg-[#EBF3E4] px-2.5 py-1 text-xs font-extrabold text-[#3F6212]">
-            {mins} : {secs}
+        <div className="mt-1 flex items-center justify-between rounded-xl bg-white/90 px-3 py-1.5 text-xs text-[#1F1510]">
+          <span className="font-mono font-bold">✓ {promoCode}</span>
+          <span className="font-['Plus_Jakarta_Sans'] font-extrabold text-[#3F6212]">
+            {mins}:{secs}
           </span>
         </div>
       </div>
@@ -157,7 +186,7 @@ export function PaywallStep() {
         <span className="underline">{t.funnel.paywall.manageSub}</span>.
       </div>
 
-      <div className="flex items-center justify-center gap-3 pt-1 text-[10px] font-bold text-[#6B5E57]">
+      <div className="flex flex-wrap items-center justify-center gap-2 pt-1 text-[10px] font-bold text-[#6B5E57]">
         <span className="rounded border border-[#EAE3DC] bg-white px-2 py-0.5">SSL SECURED</span>
         <span className="rounded border border-[#EAE3DC] bg-white px-2 py-0.5">VISA</span>
         <span className="rounded border border-[#EAE3DC] bg-white px-2 py-0.5">Mastercard</span>
@@ -166,7 +195,83 @@ export function PaywallStep() {
     </div>
   );
 
-  const featureIcons = [Dumbbell, Sparkles, Timer, ShieldCheck, Utensils, GraduationCap];
+  // 6 Features with icons from Image 4
+  const featureList = [
+    {
+      title: t.funnel.paywall.features[0]?.title || 'Treinos fáceis em casa',
+      desc: t.funnel.paywall.features[0]?.desc || 'para ganhar músculos e ficar em forma',
+      icon: Flame,
+    },
+    {
+      title: t.funnel.paywall.features[1]?.title || 'Exercícios para iniciantes',
+      desc: t.funnel.paywall.features[1]?.desc || 'para uma barriga mais lisa e uma forma melhor',
+      icon: TrendingUp,
+    },
+    {
+      title: t.funnel.paywall.features[2]?.title || 'Rotinas de 10-20 min',
+      desc: t.funnel.paywall.features[2]?.desc || 'que se encaixam na sua agenda',
+      icon: Timer,
+    },
+    {
+      title: t.funnel.paywall.features[3]?.title || 'Sem equipamento',
+      desc: t.funnel.paywall.features[3]?.desc || 'tudo que você precisa é nosso plano',
+      icon: Ban,
+    },
+    {
+      title: t.funnel.paywall.features[4]?.title || 'Plano alimentar personalizado',
+      desc: t.funnel.paywall.features[4]?.desc || 'com receitas rápidas e saborosas',
+      icon: Utensils,
+    },
+    {
+      title: t.funnel.paywall.features[5]?.title || 'Dicas e truques de especialistas',
+      desc: t.funnel.paywall.features[5]?.desc || 'para melhorar seu estilo de vida e se manter em forma',
+      icon: GraduationCap,
+    },
+  ];
+
+  // 5 Realistic iPhone mockups (Image 3)
+  const phoneMockups = [
+    {
+      id: 'workout',
+      title: 'Full-Body Workout',
+      sub: '120 kcal · 15 MIN',
+      img: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=400&q=80',
+      action: 'START WORKOUT',
+      tag: 'Glutes & Core',
+    },
+    {
+      id: 'meal-log',
+      title: 'Meal Log',
+      sub: 'Salmon, Avocado, Egg',
+      img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80',
+      action: 'LOG FOOD',
+      tag: 'Salmon 410 kcal',
+    },
+    {
+      id: 'dashboard',
+      title: 'Today · Aug 18',
+      sub: 'Calisthenics Challenge',
+      img: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=400&q=80',
+      action: 'Do your workout ✓',
+      tag: 'Water 1.5L',
+    },
+    {
+      id: 'timer',
+      title: 'Active Challenge',
+      sub: '04:17 elapsed',
+      img: 'https://images.unsplash.com/photo-1518310383802-640c2de311b2?auto=format&fit=crop&w=400&q=80',
+      action: '0:20',
+      tag: '250 kcal burned',
+    },
+    {
+      id: 'recipe',
+      title: 'Chicken with Salad',
+      sub: '380 kcal · 35g Protein',
+      img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=400&q=80',
+      action: 'LOG MEAL',
+      tag: '15 min prep',
+    },
+  ];
 
   return (
     <div className="flex flex-col gap-8 pb-12">
@@ -243,67 +348,191 @@ export function PaywallStep() {
         </div>
       </div>
 
-      {/* Choose your plan block #1 */}
-      <div>
-        <h2 className="bm-title mb-4">{t.funnel.paywall.choosePlanTitle}</h2>
-        <PricingCardsBlock />
-      </div>
+      {/* Choose your plan block #1 (ou Card de Teste de 7 Dias - Imagem 2) */}
+      {trialMode ? (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="rounded-3xl border-2 border-[#2E1F19] bg-white p-6 sm:p-8 text-center shadow-md"
+        >
+          <span className="inline-block rounded-full bg-[#EBF3E4] px-3 py-1 text-xs font-extrabold text-[#3F6212] mb-3">
+            ✓ TESTE DE 7 DIAS PERSONALIZADO
+          </span>
+          <h2 className="font-['Plus_Jakarta_Sans'] text-2xl sm:text-3xl font-extrabold text-[#1F1510]">
+            {interpolate(t.funnel.paywall.trialHeroTitle, {
+              price: config.plans['7_days_trial'].sale,
+            })}
+          </h2>
+          <p className="mt-2 text-sm font-semibold text-[#6B5E57]">
+            {interpolate(t.funnel.paywall.trialHeroSub, {
+              renewalPrice: config.plans['4_weeks'].full,
+            })}
+          </p>
 
-      {/* What is included in your plan */}
-      <div className="rounded-3xl bg-[#F5EFE8]/70 p-5">
+          <div className="mt-6">
+            <CTAButton onClick={() => setCheckoutOpen(true)}>
+              {t.funnel.paywall.trialStartCta}
+            </CTAButton>
+          </div>
+
+          <div className="mt-5 rounded-2xl border border-[#EAE3DC] bg-[#FAF8F5] p-4 text-center text-[11px] leading-relaxed text-[#8C7E77]">
+            {interpolate(t.funnel.paywall.trialLegal, {
+              renewalPrice: config.plans['4_weeks'].full,
+            })}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => {
+              setTrialMode(false);
+              setFunnel({ selectedPlan: '4_weeks' });
+            }}
+            className="mt-4 text-xs font-bold text-[#6B5E57] hover:text-[#1F1510] underline transition"
+          >
+            {t.funnel.paywall.trialSeeOtherPlans}
+          </button>
+        </motion.div>
+      ) : (
+        <div>
+          <h2 className="bm-title mb-4">{t.funnel.paywall.choosePlanTitle}</h2>
+          <PricingCardsBlock />
+          <div className="mt-3 text-center">
+            <button
+              type="button"
+              onClick={() => setShowExitModal(true)}
+              className="text-xs font-semibold text-[#6B5E57] hover:text-[#1F1510] underline transition"
+            >
+              💡 {t.funnel.paywall.exitModalTitle} {t.funnel.paywall.exitModalCta}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* O que está incluído no seu plano (5 iPhones realistas - Imagem 3) */}
+      <div className="rounded-3xl bg-[#F5EFE8]/70 p-5 sm:p-7">
         <h2 className="bm-title">{t.funnel.paywall.includedTitle}</h2>
 
-        {/* Mini App screens strip */}
-        <div className="mt-4 flex gap-2.5 overflow-x-auto pb-2">
-          {[
-            { label: 'Full-Body', img: isWoman ? AVATARS.objectives.mulher['Conseguir um corpo firme e tonificado'] : AVATARS.objectives.homem['Conseguir um corpo firme e tonificado'] },
-            { label: 'Meal Log', img: AVATARS.meals.lunch },
-            { label: 'Today', img: isWoman ? AVATARS.gender.mulher : AVATARS.gender.homem },
-            { label: '0:20 Timer', img: isWoman ? AVATARS.objectives.mulher['Perder peso'] : AVATARS.objectives.homem['Perder peso'] },
-          ].map((scr) => (
+        {/* 5 iPhone mockups carousel strip */}
+        <div className="mt-5 flex gap-4 overflow-x-auto pb-4 pt-1 scrollbar-none justify-start sm:justify-center">
+          {phoneMockups.map((p) => (
             <div
-              key={scr.label}
-              className="w-24 shrink-0 overflow-hidden rounded-2xl border-2 border-[#1F1510] bg-white p-1.5 shadow-sm"
+              key={p.id}
+              className="w-[152px] sm:w-[165px] shrink-0 rounded-[30px] border-[5px] border-[#1F1510] bg-[#1F1510] p-1 shadow-lg transition hover:scale-[1.02]"
             >
-              <img src={scr.img} alt={scr.label} className="h-24 w-full rounded-xl object-cover" />
-              <p className="mt-1.5 text-center text-[10px] font-bold text-[#1F1510]">{scr.label}</p>
+              <div className="flex h-full flex-col justify-between rounded-[24px] bg-[#FAF8F5] p-2 text-center overflow-hidden">
+                {/* Dynamic island pill */}
+                <div className="mx-auto h-2 w-10 rounded-full bg-[#1F1510] mb-1" />
+
+                <div className="overflow-hidden rounded-xl border border-[#EAE3DC] bg-white">
+                  <img src={p.img} alt={p.title} className="h-28 w-full object-cover" />
+                </div>
+
+                <div className="pt-2">
+                  <p className="font-['Plus_Jakarta_Sans'] text-[11px] font-extrabold text-[#1F1510] leading-tight">
+                    {p.title}
+                  </p>
+                  <p className="mt-0.5 text-[9px] text-[#6B5E57] leading-tight">{p.sub}</p>
+                </div>
+
+                <div className="mt-2.5">
+                  <span className="block w-full rounded-full bg-[#2E1F19] py-1 text-[9px] font-bold uppercase tracking-wider text-white shadow-xs">
+                    {p.action}
+                  </span>
+                </div>
+              </div>
             </div>
           ))}
         </div>
 
-        {/* 6 features list */}
-        <div className="mt-4 flex flex-col gap-3">
-          {t.funnel.paywall.features.map((feat, idx) => {
-            const Icon = featureIcons[idx] || Smartphone;
-            return (
-              <div key={feat.title} className="flex items-start gap-3 border-b border-[#EAE3DC] pb-2.5 last:border-0">
-                <Icon size={17} className="mt-0.5 shrink-0 text-[#2E1F19]" />
-                <div>
-                  <p className="text-xs font-extrabold text-[#1F1510]">{feat.title}</p>
-                  <p className="text-[11px] text-[#6B5E57]">{feat.desc}</p>
+        {/* Features + Your progress 2-Column Grid (Imagem 4) */}
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+          {/* Left Column: 6 Features List */}
+          <div className="flex flex-col justify-between gap-3.5">
+            {featureList.map((feat) => {
+              const Icon = feat.icon;
+              return (
+                <div
+                  key={feat.title}
+                  className="flex items-start gap-3 rounded-2xl bg-white/80 p-3.5 border border-[#EAE3DC] shadow-2xs"
+                >
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#F5EFE8] text-[#2E1F19]">
+                    <Icon size={18} strokeWidth={2.2} />
+                  </div>
+                  <div>
+                    <p className="text-xs font-extrabold text-[#1F1510]">{feat.title}</p>
+                    <p className="mt-0.5 text-[11px] text-[#6B5E57] leading-snug">{feat.desc}</p>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
 
-        {/* Your progress mini grid */}
-        <div className="mt-4 rounded-2xl border border-[#EAE3DC] bg-white p-3.5">
-          <p className="text-xs font-bold text-[#1F1510]">{t.funnel.paywall.progressHeader}</p>
-          <div className="mt-2.5 grid grid-cols-4 gap-1.5 text-center text-[10px]">
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((d) => (
-              <div
-                key={d}
-                className={`rounded-xl p-2 font-bold ${
-                  d <= 2 ? 'bg-[#2E1F19] text-white' : 'bg-[#F5EFE8] text-[#6B5E57]'
-                }`}
-              >
-                {t.funnel.paywall.dayLabel} {d}
-                <span className="mt-0.5 block text-[9px]">
-                  {d <= 2 ? '✓' : `${8 + d} min`}
+          {/* Right Column: Your Progress Interactive Card with Fit Model */}
+          <div className="relative overflow-hidden rounded-3xl border border-[#EAE3DC] bg-white p-5 shadow-sm flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between">
+                <p className="font-['Plus_Jakarta_Sans'] text-base font-extrabold text-[#1F1510]">
+                  {t.funnel.paywall.progressHeader}
+                </p>
+                <span className="rounded-full bg-[#EBF3E4] px-2.5 py-0.5 text-[10px] font-extrabold uppercase text-[#3F6212]">
+                  14 Dias
                 </span>
               </div>
-            ))}
+
+              {/* Progress bar */}
+              <div className="mt-2.5 h-2 w-full rounded-full bg-[#F5EFE8] overflow-hidden">
+                <div className="h-full w-2/5 rounded-full bg-[#2E1F19]" />
+              </div>
+            </div>
+
+            <div className="mt-4 relative min-h-[270px]">
+              {/* Grid of days 1 to 14 */}
+              <div className="grid grid-cols-3 gap-1.5 text-center text-[10px] max-w-[62%] sm:max-w-[60%] z-10 relative">
+                {[
+                  { day: 1, done: true },
+                  { day: 2, done: true },
+                  { day: 3, done: true },
+                  { day: 4, min: '12 min' },
+                  { day: 5, min: '15 min' },
+                  { day: 6, min: '7 min' },
+                  { day: 7, done: true },
+                  { day: 8, min: '8 min' },
+                  { day: 9, min: '8 min' },
+                  { day: 10, min: '10 min' },
+                  { day: 11, done: true },
+                  { day: 12, min: '8 min' },
+                  { day: 13, min: '17 min' },
+                  { day: 14, min: '11 min' },
+                ].map((item) => (
+                  <div
+                    key={item.day}
+                    className={`rounded-xl p-2 font-bold shadow-2xs transition ${
+                      item.done
+                        ? 'bg-[#2E1F19] text-white'
+                        : 'border border-[#EAE3DC] bg-[#FAF8F5] text-[#6B5E57]'
+                    }`}
+                  >
+                    <span className="block text-[8px] opacity-80">Day {item.day}</span>
+                    <span className="mt-0.5 block text-[10px] font-extrabold">
+                      {item.done ? '✓' : item.min}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Athletic Fit Model on the right */}
+              <div className="absolute right-[-10px] bottom-[-20px] top-0 w-[48%] pointer-events-none flex items-end justify-end">
+                <img
+                  src={isWoman ? '/assets/gender-woman-fit.jpg' : '/assets/gender-man-fit.jpg'}
+                  alt="Fit Progress Model"
+                  className="h-[280px] w-full object-cover object-top drop-shadow-md rounded-2xl"
+                  style={{
+                    maskImage: 'linear-gradient(to right, transparent 0%, black 25%)',
+                    WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 25%)',
+                  }}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -433,7 +662,27 @@ export function PaywallStep() {
       {/* Bottom Pricing Section */}
       <div>
         <h2 className="bm-title mb-4">{t.funnel.paywall.visibleResultsTitle}</h2>
-        <PricingCardsBlock />
+        {trialMode ? (
+          <div className="rounded-3xl border-2 border-[#2E1F19] bg-white p-6 sm:p-8 text-center shadow-md">
+            <h3 className="font-['Plus_Jakarta_Sans'] text-2xl font-extrabold text-[#1F1510]">
+              {interpolate(t.funnel.paywall.trialHeroTitle, {
+                price: config.plans['7_days_trial'].sale,
+              })}
+            </h3>
+            <p className="mt-1 text-xs font-semibold text-[#6B5E57]">
+              {interpolate(t.funnel.paywall.trialHeroSub, {
+                renewalPrice: config.plans['4_weeks'].full,
+              })}
+            </p>
+            <div className="mt-5">
+              <CTAButton onClick={() => setCheckoutOpen(true)}>
+                {t.funnel.paywall.trialStartCta}
+              </CTAButton>
+            </div>
+          </div>
+        ) : (
+          <PricingCardsBlock />
+        )}
       </div>
 
       {/* 30-Day Money-Back Guarantee */}
@@ -462,7 +711,66 @@ export function PaywallStep() {
         </div>
       </footer>
 
+      {/* Checkout Modal */}
       <CheckoutModal open={checkoutOpen} onClose={() => setCheckoutOpen(false)} />
+
+      {/* Exit Intent / Downsell Modal (Imagem 1) */}
+      <AnimatePresence>
+        {showExitModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowExitModal(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 16 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 320 }}
+              className="relative z-10 w-full max-w-[460px] rounded-3xl bg-white p-6 sm:p-7 shadow-2xl text-center"
+            >
+              <button
+                type="button"
+                onClick={() => setShowExitModal(false)}
+                className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-[#F5EFE8] text-[#1F1510] hover:bg-[#EAE3DC] transition"
+              >
+                <X size={16} />
+              </button>
+
+              <h3 className="font-['Plus_Jakarta_Sans'] text-2xl font-extrabold text-[#1F1510] pt-2">
+                {t.funnel.paywall.exitModalTitle}
+              </h3>
+              <p className="mt-3 text-xs sm:text-sm text-[#6B5E57] leading-relaxed">
+                {t.funnel.paywall.exitModalSubtitle}
+              </p>
+
+              <div className="mt-4 rounded-2xl border border-[#C9DFB8] bg-[#EBF3E4] p-3.5 text-left flex items-start gap-3">
+                <span className="text-xl shrink-0">👍</span>
+                <p className="text-xs font-semibold leading-relaxed text-[#2E4218]">
+                  {t.funnel.paywall.exitModalCallout}
+                </p>
+              </div>
+
+              <p className="mt-3 text-[11px] text-[#8C7E77] leading-relaxed">
+                {t.funnel.paywall.exitModalNote}
+              </p>
+
+              <motion.button
+                type="button"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleStartTrial}
+                className="mt-5 w-full rounded-2xl bg-[#2E1F19] hover:bg-[#1A120E] text-white py-3.5 text-xs sm:text-sm font-extrabold uppercase tracking-wider shadow-lg transition"
+              >
+                {t.funnel.paywall.exitModalCta}
+              </motion.button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
